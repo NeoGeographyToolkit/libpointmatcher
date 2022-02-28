@@ -645,8 +645,22 @@ struct PointMatcher
 		
 		virtual ~ICPChainBase();
 
-		virtual void setDefault();
-		
+               void initRefTree(DataPoints& reference,
+                                std::string alignment_method,
+                                bool highest_accuracy, bool verbose);
+               void setParams(std::string output_prefix,
+                              int numIter, double outlierRatio,
+                              double rotationError,
+                              double translationError,
+                              std::string alignment_method,
+                              bool verbose);
+                virtual void setDefault();
+                void initICP();
+                void filterGrossOutliersAndCalcErrors (const DataPoints& referenceIn,
+                                                       double maxDistSq,
+                                                       DataPoints& reading, Matrix & errors //in-out
+                                                       );
+
 		void loadFromYaml(std::istream& in);
 		unsigned getPrefilteredReadingPtsCount() const;
 		unsigned getPrefilteredReferencePtsCount() const;
@@ -683,12 +697,12 @@ struct PointMatcher
 		TransformationParameters operator()(
 			const DataPoints& readingIn,
 			const DataPoints& referenceIn,
-			const TransformationParameters& initialTransformationParameters);
-		
+			const TransformationParameters& initialTransformationParameters, bool computeTranslationOnly);
+
 		TransformationParameters compute(
 			const DataPoints& readingIn,
 			const DataPoints& referenceIn,
-			const TransformationParameters& initialTransformationParameters);
+			const TransformationParameters& initialTransformationParameters, bool computeTranslationOnly);
 
 		//! Return the filtered point cloud reading used in the ICP chain
 		const DataPoints& getReadingFiltered() const { return readingFiltered; }
@@ -698,7 +712,7 @@ struct PointMatcher
 			const DataPoints& readingIn, 
 			const DataPoints& reference, 
 			const TransformationParameters& T_refIn_refMean,
-			const TransformationParameters& initialTransformationParameters);
+			const TransformationParameters& initialTransformationParameters, bool computeTranslationOnly);
 
 		DataPoints readingFiltered; //!< reading point cloud after the filters were applied
 	};

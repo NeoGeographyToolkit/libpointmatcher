@@ -46,6 +46,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Eigen/QR"
 #include "Eigen/Eigenvalues"
 
+#ifdef _OPENMP
+boost::mutex WriteLock; // Will manage data being written by threads
+#endif
+
 using namespace std;
 using namespace PointMatcherSupport;
 
@@ -533,6 +537,7 @@ void DataPointsFiltersImpl<T>::SurfaceNormalDataPointsFilter::inPlaceFilter(
 
 	// Search for surrounding points and compute descriptors
 	int degenerateCount(0);
+#pragma omp parallel for
 	for (int i = 0; i < pointsCount; ++i)
 	{
 		// Mean of nearest neighbors (NN)
@@ -560,6 +565,9 @@ void DataPointsFiltersImpl<T>::SurfaceNormalDataPointsFilter::inPlaceFilter(
 			}
 			else
 			{
+#ifdef _OPENMP
+				boost::unique_lock<boost::mutex> w_lock(WriteLock);
+#endif
 				//std::cout << "WARNING: Matrix C needed for eigen decomposition is degenerated. Expected cause: no noise in data" << std::endl;
 				++degenerateCount;
 			}

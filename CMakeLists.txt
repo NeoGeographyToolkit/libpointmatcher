@@ -166,12 +166,14 @@ option(USE_SYSTEM_YAML_CPP "Use system version of yaml-cpp rather than one packa
 
 if(USE_SYSTEM_YAML_CPP)
     message(STATUS "Looking for yaml-cpp on system")
-    find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h
-            /usr/local/include
-    )
-    find_library(yaml-cpp_LIBRARIES yaml-cpp PATHS
-            /usr/local/lib
-    )
+    #find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h
+    #        /usr/local/include
+    #)
+    #find_library(yaml-cpp_LIBRARIES yaml-cpp PATHS
+    #        /usr/local/lib
+    #)
+    set(yaml-cpp_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}/yaml-cpp/")
+    set(yaml-cpp_LIBRARIES "${INSTALL_LIB_DIR}")
     if(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
             include_directories(${yaml-cpp_INCLUDE_DIRS})
             add_definitions(-DSYSTEM_YAML_CPP)
@@ -249,12 +251,12 @@ file(GLOB POINTMATCHER_HEADERS "pointmatcher/*.h")
 
 # MacOS deals with shared/dynamic library differently. For
 # simplicity, we only authorize static library in that case.
-if(APPLE)
+#if(APPLE)
 
-	add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
-	install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
+#	add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
+#	install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
 
-else(APPLE)
+#else(APPLE)
 	set(SHARED_LIBS "true" CACHE BOOL "To build shared (true) or static (false) library")
 
 	if (SHARED_LIBS)
@@ -263,12 +265,13 @@ else(APPLE)
 						ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
 						LIBRARY DESTINATION ${INSTALL_LIB_DIR}
 						RUNTIME DESTINATION ${INSTALL_BIN_DIR})
+                target_link_libraries(pointmatcher ${yaml-cpp_LIBRARIES} ${NABO_LIBRARY} ${Boost_LIBRARIES})
 		#install(TARGETS pointmatcher LIBRARY DESTINATION ${INSTALL_LIB_DIR})
 	else(SHARED_LIBS)
 		add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
 		install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
 	endif(SHARED_LIBS)
-endif(APPLE)
+#endif(APPLE)
 
 
 # link all libraries to libpointmatcher
@@ -306,7 +309,7 @@ add_subdirectory(examples)
 # Evaluation programs
 add_subdirectory(evaluations)
 # Unit testing
-add_subdirectory(utest)
+#add_subdirectory(utest)
 
 
 #=================== allow find_package() =========================
