@@ -108,7 +108,28 @@ struct ErrorMinimizersImpl
 		virtual T getOverlap() const;
 	};
 
-	struct PointToPointWithCovErrorMinimizer: ErrorMinimizer
+	struct PointToPlaneSimilarityErrorMinimizer: public ErrorMinimizer
+	{
+		inline static const std::string description()
+		{
+			return "Point-to-plane similarity error.";
+		}
+		
+		inline static const ParametersDoc availableParameters()
+		{
+			return boost::assign::list_of<ParameterDoc>
+				( "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>)
+			;
+		}
+
+		const bool force2D;
+		
+		PointToPlaneSimilarityErrorMinimizer(const Parameters& params = Parameters());
+		virtual TransformationParameters compute(const DataPoints& filteredReading, const DataPoints& filteredReference, const OutlierWeights& outlierWeights, const Matches& matches);
+		virtual T getOverlap() const;
+	};
+
+        struct PointToPointWithCovErrorMinimizer: ErrorMinimizer
 	{
 		inline static const std::string description()
 		{

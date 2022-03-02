@@ -106,7 +106,7 @@ void PointMatcher<T>::ICPChainBase::initRefTree
   os.str(""); os << 1.0; p["ratio"] = os.str();
   os.str(""); os << 10;  p["knn"] = os.str();
 
-  if (alignment_method == "point-to-plane"){
+  if (alignment_method == "point-to-plane" || alignment_method == "similarity-point-to-plane"){
     if (highest_accuracy)
       this->referenceDataPointsFilters.push_back(new typename DataPointsFiltersImpl<T>::SurfaceNormalDataPointsFilter(p));
     else
@@ -121,7 +121,7 @@ void PointMatcher<T>::ICPChainBase::initRefTree
 
   // Apply reference filters, it changes the reference and
   // creates the tree.
-  if (alignment_method == "point-to-plane"){
+  if (alignment_method == "point-to-plane" || alignment_method == "similarity-point-to-plane"){
     this->referenceDataPointsFilters.init();
     this->referenceDataPointsFilters.apply(reference);
   }
@@ -146,7 +146,8 @@ void PointMatcher<T>::ICPChainBase::setParams
 
   this->cleanup();
 
-  if (alignment_method != "similarity-point-to-point")
+  if (alignment_method != "similarity-point-to-point" &&
+      alignment_method != "similarity-point-to-plane")
     this->transformations.push_back(new typename TransformationsImpl<T>::RigidTransformation());
   else
     this->transformations.push_back(new typename TransformationsImpl<T>::SimilarityTransformation());
@@ -160,6 +161,8 @@ void PointMatcher<T>::ICPChainBase::setParams
     this->errorMinimizer.reset(new typename ErrorMinimizersImpl<T>::PointToPointErrorMinimizer());
   else if (alignment_method == "similarity-point-to-point")
     this->errorMinimizer.reset(new typename ErrorMinimizersImpl<T>::PointToPointSimilarityErrorMinimizer());
+  else if (alignment_method == "similarity-point-to-plane")
+    this->errorMinimizer.reset(new typename ErrorMinimizersImpl<T>::PointToPlaneSimilarityErrorMinimizer());
   else
     throw runtime_error("Unsupported alignment method: " + alignment_method);
   
@@ -278,7 +281,8 @@ void PointMatcher<T>::ICPChainBase::loadFromYaml(std::istream& in)
 	usedModuleTypes.insert(createModuleFromRegistrar("errorMinimizer", doc, pm.REG(ErrorMinimizer), errorMinimizer));
 
 	// See if to use a rigid transformation
-	if (nodeVal("errorMinimizer", doc) != "PointToPointSimilarityErrorMinimizer")
+	if (nodeVal("errorMinimizer", doc) != "PointToPointSimilarityErrorMinimizer" &&
+            nodeVal("errorMinimizer", doc) != "PointToPlaneSimilarityErrorMinimizer")
 		this->transformations.push_back(new typename TransformationsImpl<T>::RigidTransformation());
 	else
 		this->transformations.push_back(new typename TransformationsImpl<T>::SimilarityTransformation());
