@@ -1820,8 +1820,8 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& dat
         indices(1,it) = floor(angles(it)/angularBinWidth);
         if(indices(1,it) > 7)
           indices(1,it) = 7;
-        gestaltMeans(indices(0,it), indices(1,it)) += heights(it);
-        numOfValues(indices(0,it), indices(1,it))++;
+        gestaltMeans((int)indices(0,it), (int)indices(1,it)) += heights(it);
+        numOfValues((int)indices(0,it), (int)indices(1,it))++;
       }
 
       for (int radial=0; radial < 4; ++radial) {
@@ -1832,7 +1832,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& dat
         }
       }
       for (int it=0; it < colCount; ++it) {
-        gestaltVariances(indices(0,it), indices(1,it)) += (heights(it)-gestaltMeans(indices(0,it), indices(1,it))) * (heights(it)-gestaltMeans(indices(0,it), indices(1,it)));
+        gestaltVariances((int)indices(0,it), (int)indices(1,it)) += (heights(it)-gestaltMeans((int)indices(0,it), (int)indices(1,it))) * (heights(it)-gestaltMeans((int)indices(0,it), (int)indices(1,it)));
       }
       for (int radial=0; radial < 4; ++radial) {
         for (int angular = 0; angular < 8; ++angular) {
