@@ -190,14 +190,14 @@ else(USE_SYSTEM_YAML_CPP)
         #get_property(yaml-cpp-pm_INCLUDE TARGET yaml-cpp-pm PROPERTY INCLUDE_DIRECTORIES)
         #include_directories(${yaml-cpp-pm_INCLUDE})
         
-        get_property(yaml-cpp-pm_LIB TARGET yaml-cpp-pm PROPERTY LOCATION)
-        set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp-pm_LIB} )
-        set (EXTRA_DEPS ${EXTRA_DEPS} yaml-cpp-pm)
-        set(yamlcpp_FOUND)
+        # get_property(yaml-cpp-pm_LIB TARGET yaml-cpp-pm PROPERTY LOCATION)
+        # set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp-pm_LIB} )
+        # set (EXTRA_DEPS ${EXTRA_DEPS} yaml-cpp-pm)
+        # set(yamlcpp_FOUND)
 
-        get_property(yaml-cpp-pm_VERSION TARGET yaml-cpp-pm PROPERTY VERSION)
-        message("-- using built-in yaml-cpp, version ${yaml-cpp-pm_VERSION}")
-        message("   -- text-based configuration enabled")
+        # get_property(yaml-cpp-pm_VERSION TARGET yaml-cpp-pm PROPERTY VERSION)
+        # message("-- using built-in yaml-cpp, version ${yaml-cpp-pm_VERSION}")
+        # message("   -- text-based configuration enabled")
 endif(USE_SYSTEM_YAML_CPP)
 
 
