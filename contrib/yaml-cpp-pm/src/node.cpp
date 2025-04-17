@@ -51,9 +51,9 @@ namespace YAML_PM
 		return m_pOwnership->Create();
 	}
 
-	std::auto_ptr<Node> Node::Clone() const
+	std::unique_ptr<Node> Node::Clone() const
 	{
-		std::auto_ptr<Node> pNode(new Node);
+		std::unique_ptr<Node> pNode(new Node);
 		NodeBuilder nodeBuilder(*pNode);
 		EmitEvents(nodeBuilder);
 		return pNode;
@@ -145,9 +145,9 @@ namespace YAML_PM
 			case NodeType::Scalar:
 				return Iterator();
 			case NodeType::Sequence:
-				return Iterator(std::auto_ptr<IterPriv>(new IterPriv(m_seqData.begin())));
+				return Iterator(std::unique_ptr<IterPriv>(new IterPriv(m_seqData.begin())));
 			case NodeType::Map:
-				return Iterator(std::auto_ptr<IterPriv>(new IterPriv(m_mapData.begin())));
+				return Iterator(std::unique_ptr<IterPriv>(new IterPriv(m_mapData.begin())));
 		}
 		
 		assert(false);
@@ -163,9 +163,9 @@ namespace YAML_PM
 			case NodeType::Scalar:
 				return Iterator();
 			case NodeType::Sequence:
-				return Iterator(std::auto_ptr<IterPriv>(new IterPriv(m_seqData.end())));
+				return Iterator(std::unique_ptr<IterPriv>(new IterPriv(m_seqData.end())));
 			case NodeType::Map:
-				return Iterator(std::auto_ptr<IterPriv>(new IterPriv(m_mapData.end())));
+				return Iterator(std::unique_ptr<IterPriv>(new IterPriv(m_mapData.end())));
 		}
 		
 		assert(false);

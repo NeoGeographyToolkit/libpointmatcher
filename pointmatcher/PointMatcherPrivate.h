@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace PointMatcherSupport
 {
 	//! Mutex to protect creation and deletion of logger
-	extern boost::mutex loggerMutex;
+	extern std::mutex loggerMutex;
 	//! Logger pointer
 	extern boost::shared_ptr<Logger> logger;
 	
@@ -55,7 +55,7 @@ namespace PointMatcherSupport
 	// macros for logging
 	#define LOG_INFO_STREAM(args) \
 	{ \
-		boost::mutex::scoped_lock lock(PointMatcherSupport::loggerMutex); \
+		std::lock_guard<std::mutex> lock(PointMatcherSupport::loggerMutex); \
 		if (PointMatcherSupport::logger.get() && \
 			PointMatcherSupport::logger->hasInfoChannel()) { \
 			PointMatcherSupport::logger->beginInfoEntry(__FILE__, __LINE__, __POINTMATCHER_FUNCTION__); \
@@ -65,7 +65,7 @@ namespace PointMatcherSupport
 	}
 	#define LOG_WARNING_STREAM(args) \
 	{ \
-		boost::mutex::scoped_lock lock(PointMatcherSupport::loggerMutex); \
+		std::lock_guard<std::mutex> lock(PointMatcherSupport::loggerMutex); \
 		if (PointMatcherSupport::logger.get() && \
 			PointMatcherSupport::logger->hasWarningChannel()) { \
 			PointMatcherSupport::logger->beginWarningEntry(__FILE__, __LINE__, __POINTMATCHER_FUNCTION__); \

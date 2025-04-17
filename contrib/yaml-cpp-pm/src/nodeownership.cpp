@@ -15,7 +15,7 @@ namespace YAML_PM
 
 	Node& NodeOwnership::_Create()
 	{
-		m_nodes.push_back(std::auto_ptr<Node>(new Node));
+		m_nodes.push_back(std::unique_ptr<Node>(new Node));
 		return m_nodes.back();
 	}
 

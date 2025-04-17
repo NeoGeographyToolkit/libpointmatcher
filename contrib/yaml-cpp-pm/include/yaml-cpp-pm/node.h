@@ -40,7 +40,7 @@ namespace YAML_PM
 		~Node();
 
 		void Clear();
-		std::auto_ptr<Node> Clone() const;
+		std::unique_ptr<Node> Clone() const;
 		void EmitEvents(EventHandler& eventHandler) const;
 		void EmitEvents(AliasManager& am, EventHandler& eventHandler) const;
 		
@@ -114,7 +114,7 @@ namespace YAML_PM
 		const Node *FindValueForKey(const T& key) const;
 
 	private:
-		std::auto_ptr<NodeOwnership> m_pOwnership;
+		std::unique_ptr<NodeOwnership> m_pOwnership;
 
 		Mark m_mark;
 		std::string m_tag;

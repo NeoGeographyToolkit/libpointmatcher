@@ -49,8 +49,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Eigen/Geometry"
 
 #include "nabo/nabo.h"
-
-#include <boost/thread/mutex.hpp>
+#include <mutex>
+//#include <mutex>
 
 #include <stdexcept>
 #include <limits>

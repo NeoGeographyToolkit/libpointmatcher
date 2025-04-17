@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Eigen/Eigenvalues"
 
 #ifdef _OPENMP
-boost::mutex WriteLock; // Will manage data being written by threads
+std::mutex WriteLock; // Will manage data being written by threads
 #endif
 
 using namespace std;
@@ -566,7 +566,7 @@ void DataPointsFiltersImpl<T>::SurfaceNormalDataPointsFilter::inPlaceFilter(
 			else
 			{
 #ifdef _OPENMP
-				boost::unique_lock<boost::mutex> w_lock(WriteLock);
+				boost::unique_lock<std::mutex> w_lock(WriteLock);
 #endif
 				//std::cout << "WARNING: Matrix C needed for eigen decomposition is degenerated. Expected cause: no noise in data" << std::endl;
 				++degenerateCount;

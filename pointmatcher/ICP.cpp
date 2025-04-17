@@ -269,7 +269,7 @@ void PointMatcher<T>::ICPChainBase::loadFromYaml(std::istream& in)
 
 	{
 		// NOTE: The logger needs to be initialize first to allow ouput from other contructors
-		boost::mutex::scoped_lock lock(loggerMutex);
+		std::lock_guard<std::mutex> lock(loggerMutex);
 		usedModuleTypes.insert(createModuleFromRegistrar("logger", doc, pm.REG(Logger), logger));
 	}
 	usedModuleTypes.insert(createModulesFromRegistrar("readingDataPointsFilters", doc, pm.REG(DataPointsFilter), readingDataPointsFilters));

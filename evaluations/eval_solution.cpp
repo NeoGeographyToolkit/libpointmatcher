@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 
 using namespace std;
@@ -556,7 +556,7 @@ void validateFileInfo(const PMIO::FileInfo &fileInfo)
 	
 }
 
-boost::mutex m_display;
+std::mutex m_display;
 void displayLoadingBar(const int &coreId, const int &i, const int &total, const int &nbFailures, const double sec, const double total_time)
 {
 	const double average_time = total_time/double(i+1);
