@@ -350,48 +350,48 @@ if(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
   list(REMOVE_ITEM EXTERNAL_LIBS ${yaml-cpp-pm_LIB})
 endif(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
 
-# Change the library location for an install location
-get_filename_component(POINTMATCHER_LIB_NAME ${POINTMATCHER_LIB} NAME)
-set(POINTMATCHER_LIB ${INSTALL_LIB_DIR}/${POINTMATCHER_LIB_NAME})
+# # Change the library location for an install location
+# get_filename_component(POINTMATCHER_LIB_NAME ${POINTMATCHER_LIB} NAME)
+# set(POINTMATCHER_LIB ${INSTALL_LIB_DIR}/${POINTMATCHER_LIB_NAME})
 
-# We put the generated file for installation in a different repository (i.e., ./CMakeFiles/)
-configure_file(libpointmatcherConfig.cmake.in
-  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" @ONLY)
+# # We put the generated file for installation in a different repository (i.e., ./CMakeFiles/)
+# configure_file(libpointmatcherConfig.cmake.in
+#   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" @ONLY)
 
-# The same versioning file can be used for both cases
-configure_file(libpointmatcherConfigVersion.cmake.in
-  "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" @ONLY)
+# # The same versioning file can be used for both cases
+# configure_file(libpointmatcherConfigVersion.cmake.in
+#   "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" @ONLY)
  
 
-# Install the libpointmatcherConfig.cmake and libpointmatcherConfigVersion.cmake
-install(
-  FILES
-    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake"
-    "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake"
-  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev
-)
+# # Install the libpointmatcherConfig.cmake and libpointmatcherConfigVersion.cmake
+# install(
+#   FILES
+#     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake"
+#     "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake"
+#   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev
+# )
 
-# useful for TRADR european project. TODO: check to use the other install
-# required for ros deployment, too
-install (
-  FILES 
-    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" 
-    "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" 
-  DESTINATION "share/${PROJECT_NAME}/cmake/"
-)
+# # useful for TRADR european project. TODO: check to use the other install
+# # required for ros deployment, too
+# install (
+#   FILES 
+#     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" 
+#     "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" 
+#   DESTINATION "share/${PROJECT_NAME}/cmake/"
+# )
 
-#Handle pkg-config file
-set(LIBRARY_CC_ARGS "")
-foreach(_LIB IN LISTS POINTMATCHER_LIB EXTERNAL_LIBS)
-  get_filename_component(_FILE_NAME ${_LIB} NAME)
-  if(${_FILE_NAME} STREQUAL ${_LIB}) # not an absolute path 
-    set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} -l${_LIB}") 
-  else()
-    set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} ${_LIB}")
-  endif()
-endforeach()
-unset(_LIB)
-unset(_FILE_NAME)
+# #Handle pkg-config file
+# set(LIBRARY_CC_ARGS "")
+# foreach(_LIB IN LISTS POINTMATCHER_LIB EXTERNAL_LIBS)
+#   get_filename_component(_FILE_NAME ${_LIB} NAME)
+#   if(${_FILE_NAME} STREQUAL ${_LIB}) # not an absolute path 
+#     set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} -l${_LIB}") 
+#   else()
+#     set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} ${_LIB}")
+#   endif()
+# endforeach()
+# unset(_LIB)
+# unset(_FILE_NAME)
 
 configure_file(pointmatcher.pc.in libpointmatcher.pc @ONLY)
 configure_file(pointmatcher.pc.in pointmatcher.pc @ONLY) # for backward compatibility
