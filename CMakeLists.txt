@@ -88,9 +88,9 @@ install(FILES package.xml DESTINATION "share/${PROJECT_NAME}")
 
 #===========================================================================
 
-# Documentation
-set(DOXYFILE_LATEX false)
-include(UseDoxygen)
+# # Documentation
+# set(DOXYFILE_LATEX false)
+# include(UseDoxygen)
 
 # initially
 set(EXTERNAL_LIBS "")
@@ -284,8 +284,8 @@ if(EXTRA_DEPS)
 endif(EXTRA_DEPS)
 set_target_properties(pointmatcher PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION 1)
 
-# create doc before installing
-set(DOC_INSTALL_TARGET "share/doc/${PROJECT_NAME}/api" CACHE STRING "Target where to install doxygen documentation")
+# # create doc before installing
+# set(DOC_INSTALL_TARGET "share/doc/${PROJECT_NAME}/api" CACHE STRING "Target where to install doxygen documentation")
 add_dependencies(pointmatcher doc)
 install(FILES
 	pointmatcher/PointMatcher.h
@@ -297,9 +297,9 @@ install(FILES
 	DESTINATION ${INSTALL_INCLUDE_DIR}/pointmatcher
 )
 install(FILES README.md DESTINATION share/doc/${PROJECT_NAME})
-if (DOXYGEN_FOUND)
-	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/html DESTINATION ${DOC_INSTALL_TARGET})
-endif (DOXYGEN_FOUND)
+# if (DOXYGEN_FOUND)
+# 	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/html DESTINATION ${DOC_INSTALL_TARGET})
+# endif (DOXYGEN_FOUND)
 
 
 #=============== trigger other makefile ======================
@@ -324,31 +324,31 @@ add_subdirectory(evaluations)
 # 1- local build #
 
 # Register the local build in case one doesn't use "make install"
-export(PACKAGE libpointmatcher)
+# export(PACKAGE libpointmatcher)
 
-# Create variable for the local build tree
-get_property(CONF_INCLUDE_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+# # Create variable for the local build tree
+# get_property(CONF_INCLUDE_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 
 # # Create variable with the library location
 # get_target_property(POINTMATCHER_LIB pointmatcher LOCATION)
 
-# Configure config file for local build tree
-configure_file(libpointmatcherConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/libpointmatcherConfig.cmake" @ONLY)
+# # Configure config file for local build tree
+# configure_file(libpointmatcherConfig.cmake.in
+#   "${PROJECT_BINARY_DIR}/libpointmatcherConfig.cmake" @ONLY)
 
 # 2- installation build #
 
-# Change the include location for the case of an install location
-set(CONF_INCLUDE_DIRS ${INSTALL_INCLUDE_DIR} ${CONF_INCLUDE_DIRS} )
+# # Change the include location for the case of an install location
+# set(CONF_INCLUDE_DIRS ${INSTALL_INCLUDE_DIR} ${CONF_INCLUDE_DIRS} )
 
-#FIXME: this will only be applied to installed files. Confirm that we want that.
-# gather all the includes but remove ones in the source tree
-# because we added an include for the local yaml-cpp-pm we should also remove it
-list(REMOVE_ITEM CONF_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/contrib/yaml-cpp-pm/include)
+# #FIXME: this will only be applied to installed files. Confirm that we want that.
+# # gather all the includes but remove ones in the source tree
+# # because we added an include for the local yaml-cpp-pm we should also remove it
+# list(REMOVE_ITEM CONF_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/contrib/yaml-cpp-pm/include)
 
-if(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
-  list(REMOVE_ITEM EXTERNAL_LIBS ${yaml-cpp-pm_LIB})
-endif(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
+# if(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
+#   list(REMOVE_ITEM EXTERNAL_LIBS ${yaml-cpp-pm_LIB})
+# endif(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
 
 # # Change the library location for an install location
 # get_filename_component(POINTMATCHER_LIB_NAME ${POINTMATCHER_LIB} NAME)
@@ -393,20 +393,20 @@ endif(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
 # unset(_LIB)
 # unset(_FILE_NAME)
 
-configure_file(pointmatcher.pc.in libpointmatcher.pc @ONLY)
-configure_file(pointmatcher.pc.in pointmatcher.pc @ONLY) # for backward compatibility
-install(FILES 
-  ${CMAKE_BINARY_DIR}/libpointmatcher.pc 
-  ${CMAKE_BINARY_DIR}/pointmatcher.pc # for backward compatibility
-  DESTINATION lib/pkgconfig
-)
-unset(LIBRARY_CC_ARGS)
+# configure_file(pointmatcher.pc.in libpointmatcher.pc @ONLY)
+# configure_file(pointmatcher.pc.in pointmatcher.pc @ONLY) # for backward compatibility
+# install(FILES 
+#   ${CMAKE_BINARY_DIR}/libpointmatcher.pc 
+#   ${CMAKE_BINARY_DIR}/pointmatcher.pc # for backward compatibility
+#   DESTINATION lib/pkgconfig
+# )
+# unset(LIBRARY_CC_ARGS)
 
-#====================== uninstall target ===============================
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY)
+# #====================== uninstall target ===============================
+# configure_file(
+#     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+#     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+#     IMMEDIATE @ONLY)
 
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+# add_custom_target(uninstall
+#     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
