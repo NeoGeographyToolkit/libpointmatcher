@@ -279,7 +279,7 @@ file(GLOB POINTMATCHER_HEADERS "pointmatcher/*.h")
 # link all libraries to libpointmatcher
 add_definitions(-Wall)
 #target_link_libraries(pointmatcher ${yaml-cpp_LIBRARIES} ${libnabo_LIBRARIES})
-target_link_libraries(pointmatcher ${EXTERNAL_LIBS})
+target_link_libraries(pointmatcher ${EXTERNAL_LIBS} -lnabo)
 
 if(EXTRA_DEPS)
 	add_dependencies(pointmatcher ${EXTRA_DEPS})
