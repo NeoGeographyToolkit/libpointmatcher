@@ -286,7 +286,7 @@ set_target_properties(pointmatcher PROPERTIES VERSION "${PROJECT_VERSION}" SOVER
 
 # # create doc before installing
 # set(DOC_INSTALL_TARGET "share/doc/${PROJECT_NAME}/api" CACHE STRING "Target where to install doxygen documentation")
-add_dependencies(pointmatcher doc)
+#add_dependencies(pointmatcher doc)
 install(FILES
 	pointmatcher/PointMatcher.h
 	pointmatcher/PointMatcherPrivate.h
