@@ -661,7 +661,10 @@ struct PointMatcher
                                                        DataPoints& reading, Matrix & errors //in-out
                                                        );
 
+#if 0 // this yaml code is so old it does not compile
 		void loadFromYaml(std::istream& in);
+#endif
+		
 		unsigned getPrefilteredReadingPtsCount() const;
 		unsigned getPrefilteredReferencePtsCount() const;
 		
@@ -673,6 +676,7 @@ struct PointMatcher
 		
 		void cleanup();
 		
+#if 0 // This yaml code is so old it does not compile
         virtual void loadAdditionalYAMLContent(PointMatcherSupport::YAML::Node& doc);
 		
 		//! Instantiate modules if their names are in the YAML file
@@ -685,6 +689,7 @@ struct PointMatcher
 		
 		//! Get the value of a field in a node
         std::string nodeVal(const std::string& regName, const PointMatcherSupport::YAML::Node& doc);
+#endif
 	};
 	
 	//! ICP algorithm

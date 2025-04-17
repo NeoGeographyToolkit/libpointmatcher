@@ -1,5 +1,7 @@
 #include "PointMatcher.h"
 
+#if 0 // This yaml code is so old it does not compile	
+
 #ifdef SYSTEM_YAML_CPP
     #include "yaml-cpp/yaml.h"
 #else
@@ -31,3 +33,5 @@ namespace PointMatcherSupport
 		}
 	}
 }
+
+#endif

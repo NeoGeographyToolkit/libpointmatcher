@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/format.hpp>
 #include <boost/typeof/typeof.hpp>
 
+#if 0 // This yaml code is so old it does not compile
 
 #ifdef SYSTEM_YAML_CPP
 	namespace YAML
@@ -53,9 +54,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		class Node;
 	}
 #endif // HAVE_YAML_CPP
+#endif
 
 namespace PointMatcherSupport
 {
+
+#if 0 // This yaml code is so old that it does not compile
+
 #ifdef SYSTEM_YAML_CPP
 	namespace YAML = ::YAML;
 #else
@@ -64,6 +69,7 @@ namespace PointMatcherSupport
 
 	//! Retrieve name and parameters from a yaml node
 	void getNameParamsFromYAML(const YAML::Node& module, std::string& name, Parametrizable::Parameters& params);
+#endif	
 
 	//! An exception thrown when one tries to instanciate an element that does not exist in the registrar
 	struct InvalidElement: std::runtime_error
@@ -181,6 +187,7 @@ namespace PointMatcherSupport
 		}
 				
 		//! Create an instance from a YAML node
+#if 0 // This yaml code is so old it does not compile
         Interface* createFromYAML(const YAML::Node& module) const
 		{
 			std::string name;
@@ -190,6 +197,7 @@ namespace PointMatcherSupport
 			
 			return create(name, params);
 		}
+#endif
 				
 		//! Get the description of a class
 		const std::string getDescription(const std::string& name) const

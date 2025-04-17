@@ -4,8 +4,6 @@ include (CheckSymbolExists)
 
 project(libpointmatcher)
 
-set(CMAKE_CXX_STANDARD 17)
-
 # Extract version from header
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 execute_process(
@@ -98,9 +96,8 @@ install(FILES package.xml DESTINATION "share/${PROJECT_NAME}")
 set(EXTERNAL_LIBS "")
 set(EXTRA_DEPS "")
 
-# compile local version of gtest and yaml-cpp
-add_subdirectory(contrib)
-
+# compile local version of gtest and yaml-cpp (obsolete)
+# add_subdirectory(contrib)
 
 #--------------------
 # DEPENDENCY:  boost
@@ -111,7 +108,6 @@ if (Boost_MINOR_VERSION GREATER 47)
 endif (Boost_MINOR_VERSION GREATER 47)
 include_directories(${Boost_INCLUDE_DIRS})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${Boost_LIBRARIES})
-
 
 #--------------------
 # DEPENDENCY: eigen 3
@@ -136,7 +132,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${LIBNABO_INSTALL_DIR}/share/libnabo
 find_package(libnabo REQUIRED)
 #include(libnaboConfig)
 include_directories(${libnabo_INCLUDE_DIRS})
-set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${libnabo_LIBRARIES})
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lnabo)
 message("-- libnabo found, version ${libnabo_VERSION}")
 
 
@@ -161,47 +157,47 @@ if (USE_OPEN_CL)
 endif(USE_OPEN_CL)
 
 
+# Do not use yaml, as the yaml code is too old to compile
 #--------------------
 # DEPENDENCY: yaml-cpp (local or system, optional)
 #--------------------
-option(USE_SYSTEM_YAML_CPP "Use system version of yaml-cpp rather than one packaged with libpointmatcher" FALSE)
+#option(USE_SYSTEM_YAML_CPP "Use system version of yaml-cpp rather than one packaged with libpointmatcher" FALSE)
 
-if(USE_SYSTEM_YAML_CPP)
-    message(STATUS "Looking for yaml-cpp on system")
-    #find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h
-    #        /usr/local/include
-    #)
-    #find_library(yaml-cpp_LIBRARIES yaml-cpp PATHS
-    #        /usr/local/lib
-    #)
-    set(yaml-cpp_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}/yaml-cpp/")
-    set(yaml-cpp_LIBRARIES "${INSTALL_LIB_DIR}")
-    if(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-            include_directories(${yaml-cpp_INCLUDE_DIRS})
-            add_definitions(-DSYSTEM_YAML_CPP)
-            set(yamlcpp_FOUND)
-            set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp_LIBRARIES} )
-            message("-- yaml-cpp found, text-based configuration enabled")
-    else(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-            message("-- yaml-cpp not found, text-based configuration and related applications disabled")
-    endif(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-else(USE_SYSTEM_YAML_CPP)
-        include_directories(contrib/yaml-cpp-pm/include)
+# if(USE_SYSTEM_YAML_CPP)
+#     message(STATUS "Looking for yaml-cpp on system")
+#     #find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h
+#     #        /usr/local/include
+#     #)
+#     #find_library(yaml-cpp_LIBRARIES yaml-cpp PATHS
+#     #        /usr/local/lib
+#     #)
+#     set(yaml-cpp_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}/yaml-cpp/")
+#     set(yaml-cpp_LIBRARIES "${INSTALL_LIB_DIR}")
+#     if(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
+#             include_directories(${yaml-cpp_INCLUDE_DIRS})
+            #  add_definitions(-DSYSTEM_YAML_CPP)
+            #  set(yamlcpp_FOUND)
+            #  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lyaml-cpp)
+#             message("-- yaml-cpp found, text-based configuration enabled")
+#     else(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
+#             message("-- yaml-cpp not found, text-based configuration and related applications disabled")
+#     endif(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
+# else(USE_SYSTEM_YAML_CPP)
+#         include_directories(contrib/yaml-cpp-pm/include)
         
-#note: this is not working....
-        #get_property(yaml-cpp-pm_INCLUDE TARGET yaml-cpp-pm PROPERTY INCLUDE_DIRECTORIES)
-        #include_directories(${yaml-cpp-pm_INCLUDE})
+# #note: this is not working....
+#         #get_property(yaml-cpp-pm_INCLUDE TARGET yaml-cpp-pm PROPERTY INCLUDE_DIRECTORIES)
+#         #include_directories(${yaml-cpp-pm_INCLUDE})
         
-        # get_property(yaml-cpp-pm_LIB TARGET yaml-cpp-pm PROPERTY LOCATION)
-        # set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp-pm_LIB} )
-        # set (EXTRA_DEPS ${EXTRA_DEPS} yaml-cpp-pm)
-        # set(yamlcpp_FOUND)
+#         # get_property(yaml-cpp-pm_LIB TARGET yaml-cpp-pm PROPERTY LOCATION)
+#         set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp-pm_LIB} )
+#         set (EXTRA_DEPS ${EXTRA_DEPS} yaml-cpp-pm)
+#         # set(yamlcpp_FOUND)
 
-        # get_property(yaml-cpp-pm_VERSION TARGET yaml-cpp-pm PROPERTY VERSION)
-        # message("-- using built-in yaml-cpp, version ${yaml-cpp-pm_VERSION}")
-        # message("   -- text-based configuration enabled")
-endif(USE_SYSTEM_YAML_CPP)
-
+#         # get_property(yaml-cpp-pm_VERSION TARGET yaml-cpp-pm PROPERTY VERSION)
+#         # message("-- using built-in yaml-cpp, version ${yaml-cpp-pm_VERSION}")
+#         # message("   -- text-based configuration enabled")
+# endif(USE_SYSTEM_YAML_CPP)
 
 #--------------------
 # DEPENDENCY: rt (optional)
@@ -251,35 +247,25 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 file(GLOB POINTMATCHER_HEADERS "pointmatcher/*.h")
 
-# MacOS deals with shared/dynamic library differently. For
-# simplicity, we only authorize static library in that case.
-#if(APPLE)
+set(SHARED_LIBS "true" CACHE BOOL "To build shared (true) or static (false) library")
 
-#	add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
-#	install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
-
-#else(APPLE)
-	set(SHARED_LIBS "true" CACHE BOOL "To build shared (true) or static (false) library")
-
-	if (SHARED_LIBS)
-		add_library(pointmatcher SHARED ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS})
-		install(TARGETS pointmatcher
-						ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-						LIBRARY DESTINATION ${INSTALL_LIB_DIR}
-						RUNTIME DESTINATION ${INSTALL_BIN_DIR})
-                target_link_libraries(pointmatcher ${yaml-cpp_LIBRARIES} ${NABO_LIBRARY} ${Boost_LIBRARIES})
-		#install(TARGETS pointmatcher LIBRARY DESTINATION ${INSTALL_LIB_DIR})
-	else(SHARED_LIBS)
-		add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
-		install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
-	endif(SHARED_LIBS)
-#endif(APPLE)
-
+if (SHARED_LIBS)
+	add_library(pointmatcher SHARED ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS})
+	install(TARGETS pointmatcher
+					ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+					LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+					RUNTIME DESTINATION ${INSTALL_BIN_DIR})
+							target_link_libraries(pointmatcher ${EXTERNAL_LIBS})
+	#install(TARGETS pointmatcher LIBRARY DESTINATION ${INSTALL_LIB_DIR})
+else(SHARED_LIBS)
+	add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
+	install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
+endif(SHARED_LIBS)
 
 # link all libraries to libpointmatcher
 add_definitions(-Wall)
 #target_link_libraries(pointmatcher ${yaml-cpp_LIBRARIES} ${libnabo_LIBRARIES})
-target_link_libraries(pointmatcher ${EXTERNAL_LIBS} -lnabo)
+target_link_libraries(pointmatcher ${EXTERNAL_LIBS})
 
 if(EXTRA_DEPS)
 	add_dependencies(pointmatcher ${EXTRA_DEPS})
@@ -307,9 +293,9 @@ install(FILES README.md DESTINATION share/doc/${PROJECT_NAME})
 #=============== trigger other makefile ======================
 
 # Example programs
-add_subdirectory(examples)
+#add_subdirectory(examples)
 # Evaluation programs
-add_subdirectory(evaluations)
+#add_subdirectory(evaluations)
 # Unit testing
 #add_subdirectory(utest)
 

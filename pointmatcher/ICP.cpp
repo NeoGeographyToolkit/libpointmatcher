@@ -1,5 +1,3 @@
-// kate: replace-tabs off; indent-width 4; indent-mode normal
-// vim: ts=4:sw=4:noexpandtab
 /*
 
 Copyright (c) 2010--2012,
@@ -46,11 +44,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TransformationCheckersImpl.h"
 #include "InspectorsImpl.h"
 
+#if 0 // This yaml code is so old it does not compile	
+
 #ifdef SYSTEM_YAML_CPP
     #include "yaml-cpp/yaml.h"
 #else
 	#include "yaml-cpp-pm/yaml.h"
 #endif // HAVE_YAML_CPP
+#endif
 
 using namespace std;
 using namespace PointMatcherSupport;
@@ -88,11 +89,13 @@ void PointMatcher<T>::ICPChainBase::cleanup()
 	inspector.reset();
 }
 
+# if 0 // This yaml code is so old it does not compile
 //! Hook to load addition subclass-specific content from the YAML file
 template<typename T>
 void PointMatcher<T>::ICPChainBase::loadAdditionalYAMLContent(YAML::Node& doc)
 {
 }
+#endif
 
 template<typename T>
 void PointMatcher<T>::ICPChainBase::initRefTree
@@ -251,12 +254,12 @@ void PointMatcher<T>::ICPChainBase::filterGrossOutliersAndCalcErrors
         reading = mPts.reading;
 }
 
+#if 0 // This yaml code is so old it does not compile
 //! Construct an ICP algorithm from a YAML file
 template<typename T>
 void PointMatcher<T>::ICPChainBase::loadFromYaml(std::istream& in)
 {
 	this->cleanup();
-	
 	YAML::Parser parser(in);
 	YAML::Node doc;
 	parser.GetNextDocument(doc);
@@ -305,6 +308,7 @@ void PointMatcher<T>::ICPChainBase::loadFromYaml(std::istream& in)
 			);
 	}
 }
+#endif // This yaml code is so old it does not compile	
 
 //! Return the remaining number of points in reading after prefiltering but before the iterative process
 template<typename T>
@@ -321,6 +325,7 @@ unsigned PointMatcher<T>::ICPChainBase::getPrefilteredReferencePtsCount() const
 }
 
 //! Instantiate modules if their names are in the YAML file
+#if 0 // This yaml code is so old it does not compile	
 template<typename T>
 template<typename R>
 const std::string& PointMatcher<T>::ICPChainBase::createModulesFromRegistrar(const std::string& regName, const YAML::Node& doc, const R& registrar, PointMatcherSupport::SharedPtrVector<typename R::TargetType>& modules)
@@ -353,6 +358,9 @@ const std::string& PointMatcher<T>::ICPChainBase::createModuleFromRegistrar(cons
 		module.reset();
 	return regName;
 }
+#endif
+
+#if 0 // This yaml code is so old it does not compile	
 
 template<typename T>
 std::string PointMatcher<T>::ICPChainBase::nodeVal(const std::string& regName, const PointMatcherSupport::YAML::Node& doc)
@@ -367,6 +375,7 @@ std::string PointMatcher<T>::ICPChainBase::nodeVal(const std::string& regName, c
 	}
 	return "";
 }
+#endif
 
 template struct PointMatcher<float>::ICPChainBase;
 template struct PointMatcher<double>::ICPChainBase;

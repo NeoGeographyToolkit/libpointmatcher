@@ -36,12 +36,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PointMatcher.h"
 #include "PointMatcherPrivate.h"
 
+#if 0 // This yaml code is so old that it does not compile
 #ifdef SYSTEM_YAML_CPP
     #include "yaml-cpp/yaml.h"
 #else
 	#include "yaml-cpp-pm/yaml.h"
     namespace YAML = YAML_PM;
 #endif // HAVE_YAML_CPP
+#endif 
 
 //! Construct without parameter
 template<typename T>
@@ -77,6 +79,7 @@ PointMatcher<T>::DataPointsFilters::DataPointsFilters()
 template<typename T>
 PointMatcher<T>::DataPointsFilters::DataPointsFilters(std::istream& in)
 {
+#if 0 // This yaml code is so old that it does not compile
     YAML::Parser parser(in);
     YAML::Node doc;
 	parser.GetNextDocument(doc);
@@ -90,6 +93,7 @@ PointMatcher<T>::DataPointsFilters::DataPointsFilters(std::istream& in)
         const YAML::Node& module(*moduleIt);
 		this->push_back(pm.REG(DataPointsFilter).createFromYAML(module));
 	}
+#endif	
 }
 
 //! Init the chain
