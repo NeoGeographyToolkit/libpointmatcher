@@ -329,8 +329,8 @@ export(PACKAGE libpointmatcher)
 # Create variable for the local build tree
 get_property(CONF_INCLUDE_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 
-# Create variable with the library location
-get_target_property(POINTMATCHER_LIB pointmatcher LOCATION)
+# # Create variable with the library location
+# get_target_property(POINTMATCHER_LIB pointmatcher LOCATION)
 
 # Configure config file for local build tree
 configure_file(libpointmatcherConfig.cmake.in
