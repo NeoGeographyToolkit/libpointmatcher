@@ -128,13 +128,12 @@ include_directories(${EIGEN_INCLUDE_DIR})
 #--------------------
 # DEPENDENCY: nabo
 #--------------------
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${LIBNABO_INSTALL_DIR}/share/libnabo/cmake/")
-find_package(libnabo REQUIRED)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${LIBNABO_INSTALL_DIR}/share/libnabo/cmake/")
+#find_package(libnabo REQUIRED)
 #include(libnaboConfig)
-include_directories(${libnabo_INCLUDE_DIRS})
+#include_directories(${libnabo_INCLUDE_DIRS})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lnabo)
-message("-- libnabo found, version ${libnabo_VERSION}")
-
+#message("-- libnabo found, version ${libnabo_VERSION}")
 
 #--------------------
 # DEPENDENCY: OpenCL (optional)
