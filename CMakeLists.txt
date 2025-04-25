@@ -96,8 +96,9 @@ install(FILES package.xml DESTINATION "share/${PROJECT_NAME}")
 set(EXTERNAL_LIBS "")
 set(EXTRA_DEPS "")
 
-# compile local version of gtest and yaml-cpp (obsolete)
-# add_subdirectory(contrib)
+# For Boost with recent compilers must have this compiler switch
+# to avoid link time failures
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_CXX11_SCOPED_ENUMS")
 
 #--------------------
 # DEPENDENCY:  boost
@@ -206,7 +207,6 @@ check_symbol_exists(_POSIX_TIMERS "unistd.h;time.h" POSIX_TIMERS)
 if (POSIX_TIMERS AND NOT APPLE)
 	set(EXTERNAL_LIBS ${EXTERNAL_LIBS} rt)
 endif (POSIX_TIMERS AND NOT APPLE)
-
 
 # SOURCE
 
