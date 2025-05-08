@@ -359,15 +359,7 @@ void PointMatcherSupport::validateFile(const std::string& fileName)
 
 	ifstream ifs(fileName.c_str());
 	if (!ifs.good())
-	#if BOOST_FILESYSTEM_VERSION >= 3
-		#if BOOST_VERSION >= 105000
-				throw runtime_error(string("Cannot open file ") + boost::filesystem::complete(fullPath).generic_string());
-		#else
-				throw runtime_error(string("Cannot open file ") + boost::filesystem3::complete(fullPath).generic_string());
-		#endif
-	#else
-		throw runtime_error(string("Cannot open file ") + boost::filesystem::complete(fullPath).native_file_string());
-    #endif
+		throw runtime_error(string("Cannot open file ") + boost::filesystem::absolute(fullPath).generic_string());
 }
 
 
@@ -376,7 +368,8 @@ template<typename T>
 typename PointMatcher<T>::DataPoints PointMatcher<T>::DataPoints::load(const std::string& fileName)
 {
 	const boost::filesystem::path path(fileName);
-	const string& ext(boost::filesystem::extension(path));
+  std::string ext = path.extension().string();
+
 	if (boost::iequals(ext, ".vtk"))
 		return PointMatcherIO<T>::loadVTK(fileName);
 	else if (boost::iequals(ext, ".csv"))
@@ -884,7 +877,8 @@ template<typename T>
 void PointMatcher<T>::DataPoints::save(const std::string& fileName, bool binary) const
 {
 	const boost::filesystem::path path(fileName);
-	const string& ext(boost::filesystem::extension(path));
+  std::string ext = path.extension().string();
+
 	if (boost::iequals(ext, ".vtk"))
 		return PointMatcherIO<T>::saveVTK(*this, fileName, binary);
 
