@@ -31,7 +31,7 @@ endif( NOT CMAKE_SIZEOF_VOID_P EQUAL 8 )
 ## To force install as a 32 bit library, set BUILD_32 to true
 if( BUILD_32 )
 	MESSAGE(STATUS "Building as a 32 bit library")
-	SET(CMAKE_CXX_FLAGS "-m32")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
 endif( BUILD_32 )
 
 # Ensure proper build type
@@ -135,6 +135,9 @@ include_directories(${EIGEN_INCLUDE_DIR})
 #include_directories(${libnabo_INCLUDE_DIRS})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lnabo)
 #message("-- libnabo found, version ${libnabo_VERSION}")
+
+find_package(OpenMP REQUIRED)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 #--------------------
 # DEPENDENCY: OpenCL (optional)

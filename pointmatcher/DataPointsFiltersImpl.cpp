@@ -41,6 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 #include <boost/format.hpp>
+#include <boost/thread/locks.hpp>
+#include <omp.h>
 
 // Eigenvalues
 #include "Eigen/QR"

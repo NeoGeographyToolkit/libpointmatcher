@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <algorithm>
 #include <boost/type_traits/is_same.hpp>
+#include <omp.h>
 
 using namespace std;
 using namespace PointMatcherSupport;
