@@ -4,6 +4,12 @@ include (CheckSymbolExists)
 
 project(libpointmatcher)
 
+# TODO(oalexan1): These need revisiting.
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_BUILD_TYPE "Release")
+add_definitions(-O3)
+
 # Extract version from header
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 execute_process(
@@ -33,27 +39,6 @@ if( BUILD_32 )
 	MESSAGE(STATUS "Building as a 32 bit library")
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
 endif( BUILD_32 )
-
-# Ensure proper build type
-if (NOT CMAKE_BUILD_TYPE)
-  message("-- No build type specified; defaulting to CMAKE_BUILD_TYPE=Release.")
-  set(CMAKE_BUILD_TYPE Release CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-    FORCE)
-else (NOT CMAKE_BUILD_TYPE)
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message("\n=================================================================================")
-    message("\n-- Build type: Debug. Performance will be terrible!")
-    message("-- Add -DCMAKE_BUILD_TYPE=Release to the CMake command line to get an optimized build.")
-    message("\n=================================================================================")
-  endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
-endif (NOT CMAKE_BUILD_TYPE)
-
-
-#================= extra building definitions ==============================
-if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_definitions(-O3)
-endif(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # For Windows
 if( MSVC ) # VS2012 does not support tuples correctly yet
@@ -123,8 +108,6 @@ include_directories(${EIGEN_INCLUDE_DIR})
 #TODO: this should be a more standard way
 #find_package(Eigen3 REQUIRED)
 #message("-- eigen3 found, version ${Eigen3_VERSION}")
-
-
 
 #--------------------
 # DEPENDENCY: nabo
