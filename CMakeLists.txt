@@ -119,8 +119,39 @@ include_directories(${EIGEN_INCLUDE_DIR})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lnabo)
 #message("-- libnabo found, version ${libnabo_VERSION}")
 
-find_package(OpenMP REQUIRED)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+# TODO(oalexan1): Figure out why clang does not find OpenMP
+# Note: We use the path to $ENV{CONDA_PREFIX}
+if (APPLE)
+    # Use the active Conda environment path
+    set(OPENMP_ROOT "$ENV{CONDA_PREFIX}")
+
+    find_package(OpenMP)
+    set(OPENMP_INCLUDES "${OPENMP_ROOT}/include")
+    set(OpenMP_C_LIB_NAMES "omp")
+    set(OpenMP_CXX_LIB_NAMES "omp")
+    set(OpenMP_C_FLAGS "-fopenmp")
+    set(OpenMP_CXX_FLAGS "-fopenmp")
+    set(OpenMP_omp_LIBRARY "${OPENMP_ROOT}/lib/libomp${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+    # Set this variable here so the global append at the bottom works
+    set(OpenMP_EXE_LINKER_FLAGS "${OpenMP_omp_LIBRARY}")
+
+    set(OpenMP_CXX_FOUND ON)
+    set(WITH_OPENMP ON)
+    message(STATUS "Manually set: OpenMP_CXX_FLAGS=${OpenMP_CXX_FLAGS}")
+else()
+    find_package(OpenMP REQUIRED)
+endif()
+
+# TODO(oalexan1): See if this works better.
+# if(APPLE)
+#     set(OpenMP_ROOT "$ENV{CONDA_PREFIX}")
+# endif()
+# find_package(OpenMP REQUIRED)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
 #--------------------
 # DEPENDENCY: OpenCL (optional)
