@@ -85,9 +85,7 @@ set(EXTRA_DEPS "")
 # to avoid link time failures
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST_NO_CXX11_SCOPED_ENUMS")
 
-#--------------------
-# DEPENDENCY:  boost
-#--------------------
+# Boost
 find_package(Boost COMPONENTS thread filesystem system program_options date_time REQUIRED)
 if (Boost_MINOR_VERSION GREATER 47)
 	find_package(Boost COMPONENTS thread filesystem system program_options date_time chrono REQUIRED)
@@ -95,19 +93,14 @@ endif (Boost_MINOR_VERSION GREATER 47)
 include_directories(${Boost_INCLUDE_DIRS})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${Boost_LIBRARIES})
 
-#--------------------
-# DEPENDENCY: eigen 3
-#--------------------
-find_path(EIGEN_INCLUDE_DIR Eigen/Core
-	/usr/local/include/eigen3
-	/usr/include/eigen3
-)
-include_directories(${EIGEN_INCLUDE_DIR})
-#note: no library to add, eigen rely only on headers 
-
-#TODO: this should be a more standard way
-#find_package(Eigen3 REQUIRED)
-#message("-- eigen3 found, version ${Eigen3_VERSION}")
+# Eigen
+find_package(Eigen3 3 REQUIRED NO_MODULE)
+if (EIGEN3_FOUND)
+   message("-- Found Eigen3: ${EIGEN3_INCLUDE_DIRS}")
+else (EIGEN3_FOUND)
+   message(FATAL_ERROR "Cannot find Eigen3.")
+endif (EIGEN3_FOUND)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR};${EIGEN3_INCLUDE_DIR}")
 
 #--------------------
 # DEPENDENCY: nabo
