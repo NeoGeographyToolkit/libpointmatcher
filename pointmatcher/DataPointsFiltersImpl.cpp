@@ -725,7 +725,6 @@ void DataPointsFiltersImpl<T>::SamplingSurfaceNormalDataPointsFilter::inPlaceFil
 	cloud.allocateDescriptors(cloudLabels);
 
 	// we keep build data on stack for reentrant behaviour
-	View cloudExistingDescriptors(cloud.descriptors.block(0,0,cloud.descriptors.rows(),cloud.descriptors.cols()));
 	BuildData buildData(cloud.features, cloud.descriptors);
 
 	// get views
@@ -1066,8 +1065,6 @@ void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::inPlaceFilter(
   cloud.allocateTimes(timeLabels);
 
   // we keep build data on stack for reentrant behaviour
-  View cloudExistingDescriptors(cloud.descriptors.block(0,0,cloud.descriptors.rows(),cloud.descriptors.cols()));
-  TimeView cloudExistingTimes(cloud.times.block(0,0,cloud.times.rows(),cloud.times.cols()));
   BuildData buildData(cloud.features, cloud.descriptors, cloud.times);
 
   // get views
@@ -1498,8 +1495,6 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::inPlaceFilter(
   cloud.allocateTimes(timeLabels);
 
   // we keep build data on stack for reentrant behaviour
-  View cloudExistingDescriptors(cloud.descriptors.block(0,0,cloud.descriptors.rows(),cloud.descriptors.cols()));
-  TimeView cloudExistingTimes(cloud.times.block(0,0,cloud.times.rows(),cloud.times.cols()));
   BuildData buildData(cloud.features, cloud.descriptors, cloud.times);
 
   // get views

@@ -1713,9 +1713,9 @@ template
 class PointMatcherIO<double>::PLYElement;
 
 template
-class PointMatcherIO<float>::PLYProperty;
+struct PointMatcherIO<float>::PLYProperty;
 template
-class PointMatcherIO<double>::PLYProperty;
+struct PointMatcherIO<double>::PLYProperty;
 
 template <typename T>
 void PointMatcherIO<T>::PLYElement::addProperty(
@@ -2116,11 +2116,9 @@ typename PointMatcherIO<T>::DataPoints PointMatcherIO<T>::loadPCD(std::istream& 
 	featureLabels.push_back(Label("y"));
 
 	Labels descriptorLabels;
-	int n = 0;
 	for (map<string,int>::const_iterator it = descLabelToNumRows.begin(); it != descLabelToNumRows.end(); it++)
 	{
 		descriptorLabels.push_back(Label(it->first,it->second));
-		n++;
 	}
 
 	if (zFieldCol > -1)
