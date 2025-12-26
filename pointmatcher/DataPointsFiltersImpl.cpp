@@ -1746,7 +1746,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& dat
     }
     Eigen::Matrix<T,3,1> normal, newX, newY;
     Eigen::Matrix<T,3,3> newBasis;
-    double planarity, cylindricality;
+    double planarity = 0, cylindricality = 0.;
 
     if(keepNormals || keepGestaltFeatures) {
       // calculate orientation of NN
