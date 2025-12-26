@@ -687,7 +687,6 @@ template<typename T>
 void DataPointsFiltersImpl<T>::SamplingSurfaceNormalDataPointsFilter::inPlaceFilter(
 	DataPoints& cloud)
 {
-	typedef typename DataPoints::View View;
 	typedef typename DataPoints::Label Label;
 	typedef typename DataPoints::Labels Labels;
 
@@ -1001,10 +1000,8 @@ template<typename T>
 void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::inPlaceFilter(
     DataPoints& cloud)
 {
-  typedef typename DataPoints::View View;
   typedef typename DataPoints::Label Label;
   typedef typename DataPoints::Labels Labels;
-  typedef typename DataPoints::TimeView TimeView;
 
   const int pointsCount(cloud.features.cols());
   const int featDim(cloud.features.rows());
@@ -1442,10 +1439,8 @@ template<typename T>
 void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::inPlaceFilter(
     DataPoints& cloud)
 {
-  typedef typename DataPoints::View View;
   typedef typename DataPoints::Label Label;
   typedef typename DataPoints::Labels Labels;
-  typedef typename DataPoints::TimeView TimeView;
 
   const int pointsCount(cloud.features.cols());
   const int featDim(cloud.features.rows());
