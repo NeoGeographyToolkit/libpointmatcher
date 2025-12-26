@@ -1644,7 +1644,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::buildNew(BuildData& data
     }
   }
 
-  for (int idx = 0; idx < numVox; idx++)
+  for (unsigned int idx = 0; idx < numVox; idx++)
   {
     unsigned int numPoints = (*voxels)[idx].numPoints;
     unsigned int firstPoint = (*voxels)[idx].firstPoint;
@@ -1661,7 +1661,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::buildNew(BuildData& data
 
   // now the keypoints are in pointsToKeep
   // downsample with ratio
-  for(int i=0; i<pointsToKeep.size(); i++)
+  for(size_t i=0; i<pointsToKeep.size(); i++)
   {
     const float r = (float)std::rand()/(float)RAND_MAX;
     if(r < ratio)
@@ -1681,7 +1681,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& dat
 
   const int featDim(data.features.rows());
   std::vector<int> indicesToKeepStrict;
-  for (int i = 0; i< data.indicesToKeep.size(); ++i) {
+  for (size_t i = 0; i< data.indicesToKeep.size(); ++i) {
     Eigen::Matrix<T,3,1> keyPoint;
     keyPoint = input.features.col(data.indicesToKeep[i]);
 
@@ -1901,7 +1901,7 @@ template<typename T>
 typename PointMatcher<T>::Vector DataPointsFiltersImpl<T>::GestaltDataPointsFilter::calculateAngles(const Matrix points, const Eigen::Matrix<T,3,1> keyPoint) const
 {
   Vector angles(points.cols());
-  for (size_t i = 0; i<points.cols(); ++i) {
+  for (long i = 0; i<points.cols(); ++i) {
     angles(i) = atan2(points(0,i), points(1,i));
     if (angles(i) < 0)
       angles(i) += (2 * M_PI);
@@ -1913,7 +1913,7 @@ template<typename T>
 typename PointMatcher<T>::Vector DataPointsFiltersImpl<T>::GestaltDataPointsFilter::calculateRadii(const Matrix points, const Eigen::Matrix<T,3,1> keyPoint) const
 {
   Vector radii(points.cols());
-  for (size_t i = 0; i<points.cols(); ++i) {
+  for (long i = 0; i<points.cols(); ++i) {
     radii(i) = sqrt((points(0,i)) * (points(0,i)) + (points(1,i)) * (points(1,i)));
   }
   return radii;
