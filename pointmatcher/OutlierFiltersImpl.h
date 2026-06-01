@@ -108,7 +108,7 @@ struct OutlierFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "This filter considers as outlier links whose norms are above the median link norms times a factor. Based on \\cite{Diebel2004Median}.";
+			return "This filter considers as outlier links whose norms are above the median link norms times a factor. Based on Diebel2004Median.";
 		}
 		inline static const ParametersDoc availableParameters()
 		{
@@ -127,7 +127,7 @@ struct OutlierFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "Hard rejection threshold using quantile. This filter considers as inlier a certain percentage of the links with the smallest norms. Based on \\cite{Chetverikov2002Trimmed}.";
+			return "Hard rejection threshold using quantile. This filter considers as inlier a certain percentage of the links with the smallest norms. Based on Chetverikov2002Trimmed.";
 		}
 		inline static const ParametersDoc availableParameters()
 		{
@@ -146,7 +146,7 @@ struct OutlierFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "Hard rejection threshold using quantile and variable ratio. Based on \\cite{Phillips2007VarTrimmed}.";
+			return "Hard rejection threshold using quantile and variable ratio. Based on Phillips2007VarTrimmed.";
 		}
 		inline static const ParametersDoc availableParameters()
 		{

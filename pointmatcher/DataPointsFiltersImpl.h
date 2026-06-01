@@ -369,7 +369,7 @@ struct DataPointsFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "Subsampling. This filter reduces the size of the point cloud by randomly dropping points. Based on \\cite{Masuda1996Random}";
+			return "Subsampling. This filter reduces the size of the point cloud by randomly dropping points. Based on Masuda1996Random";
 		}
 		inline static const ParametersDoc availableParameters()
 		{
@@ -395,7 +395,7 @@ struct DataPointsFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "Conditional subsampling. This filter reduces the size of the point cloud by randomly dropping points if their number is above maxCount. Based on \\cite{Masuda1996Random}";
+			return "Conditional subsampling. This filter reduces the size of the point cloud by randomly dropping points if their number is above maxCount. Based on Masuda1996Random";
 		}
 		inline static const ParametersDoc availableParameters()
 		{
@@ -475,7 +475,7 @@ struct DataPointsFiltersImpl
 	{
 		inline static const std::string description()
 		{
-			return "Add a 1D descriptor named <sensorNoise> that would represent the noise radius expressed in meter based on SICK LMS specifications \\cite{Pomerleau2012Noise}.";
+			return "Add a 1D descriptor named <sensorNoise> that would represent the noise radius expressed in meter based on SICK LMS specifications Pomerleau2012Noise.";
 		}
 		
 		inline static const ParametersDoc availableParameters()
