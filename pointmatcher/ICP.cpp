@@ -44,15 +44,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "TransformationCheckersImpl.h"
 #include "InspectorsImpl.h"
 
-#if 0 // This yaml code is so old it does not compile	
-
-#ifdef SYSTEM_YAML_CPP
-    #include "yaml-cpp/yaml.h"
-#else
-	#include "yaml-cpp-pm/yaml.h"
-#endif // HAVE_YAML_CPP
-#endif
-
 using namespace std;
 using namespace PointMatcherSupport;
 
@@ -88,14 +79,6 @@ void PointMatcher<T>::ICPChainBase::cleanup()
 	transformationCheckers.clear();
 	inspector.reset();
 }
-
-# if 0 // This yaml code is so old it does not compile
-//! Hook to load addition subclass-specific content from the YAML file
-template<typename T>
-void PointMatcher<T>::ICPChainBase::loadAdditionalYAMLContent(YAML::Node& doc)
-{
-}
-#endif
 
 template<typename T>
 void PointMatcher<T>::ICPChainBase::initRefTree
@@ -254,61 +237,6 @@ void PointMatcher<T>::ICPChainBase::filterGrossOutliersAndCalcErrors
         reading = mPts.reading;
 }
 
-#if 0 // This yaml code is so old it does not compile
-//! Construct an ICP algorithm from a YAML file
-template<typename T>
-void PointMatcher<T>::ICPChainBase::loadFromYaml(std::istream& in)
-{
-	this->cleanup();
-	YAML::Parser parser(in);
-	YAML::Node doc;
-	parser.GetNextDocument(doc);
-	typedef set<string> StringSet;
-	StringSet usedModuleTypes;
-	
-	// Fix for issue #6: compilation on gcc 4.4.4
-	//PointMatcher<T> pm;
-	const PointMatcher & pm = PointMatcher::get();
-
-	{
-		// NOTE: The logger needs to be initialize first to allow ouput from other contructors
-		std::lock_guard<std::mutex> lock(loggerMutex);
-		usedModuleTypes.insert(createModuleFromRegistrar("logger", doc, pm.REG(Logger), logger));
-	}
-	usedModuleTypes.insert(createModulesFromRegistrar("readingDataPointsFilters", doc, pm.REG(DataPointsFilter), readingDataPointsFilters));
-	usedModuleTypes.insert(createModulesFromRegistrar("readingStepDataPointsFilters", doc, pm.REG(DataPointsFilter), readingStepDataPointsFilters));
-	usedModuleTypes.insert(createModulesFromRegistrar("referenceDataPointsFilters", doc, pm.REG(DataPointsFilter), referenceDataPointsFilters));
-	//usedModuleTypes.insert(createModulesFromRegistrar("transformations", doc, pm.REG(Transformation), transformations));
-	//usedModuleTypes.insert(createModuleFromRegistrar("matcher", doc, pm.REG(Matcher), matcher)); // don't destroy the already created tree
-	usedModuleTypes.insert(createModulesFromRegistrar("outlierFilters", doc, pm.REG(OutlierFilter), outlierFilters));
-	usedModuleTypes.insert(createModuleFromRegistrar("errorMinimizer", doc, pm.REG(ErrorMinimizer), errorMinimizer));
-
-	// See if to use a rigid transformation
-	if (nodeVal("errorMinimizer", doc) != "PointToPointSimilarityErrorMinimizer" &&
-            nodeVal("errorMinimizer", doc) != "PointToPlaneSimilarityErrorMinimizer")
-		this->transformations.push_back(new typename TransformationsImpl<T>::RigidTransformation());
-	else
-		this->transformations.push_back(new typename TransformationsImpl<T>::SimilarityTransformation());
-	
-	usedModuleTypes.insert(createModulesFromRegistrar("transformationCheckers", doc, pm.REG(TransformationChecker), transformationCheckers));
-	usedModuleTypes.insert(createModuleFromRegistrar("inspector", doc, pm.REG(Inspector),inspector));
-	
-	
-	// FIXME: this line cause segfault when there is an error in the yaml file...
-	//loadAdditionalYAMLContent(doc);
-	
-	// check YAML entries that do not correspend to any module
-	for(YAML::Iterator moduleTypeIt = doc.begin(); moduleTypeIt != doc.end(); ++moduleTypeIt)
-	{
-		string moduleType;
-		moduleTypeIt.first() >> moduleType;
-		if (moduleType != "matcher" && usedModuleTypes.find(moduleType) == usedModuleTypes.end())
-			throw InvalidModuleType(
-				(boost::format("Module type %1% does not exist") % moduleType).str()
-			);
-	}
-}
-#endif // This yaml code is so old it does not compile	
 
 //! Return the remaining number of points in reading after prefiltering but before the iterative process
 template<typename T>
@@ -325,57 +253,7 @@ unsigned PointMatcher<T>::ICPChainBase::getPrefilteredReferencePtsCount() const
 }
 
 //! Instantiate modules if their names are in the YAML file
-#if 0 // This yaml code is so old it does not compile	
-template<typename T>
-template<typename R>
-const std::string& PointMatcher<T>::ICPChainBase::createModulesFromRegistrar(const std::string& regName, const YAML::Node& doc, const R& registrar, PointMatcherSupport::SharedPtrVector<typename R::TargetType>& modules)
-{
-	const YAML::Node *reg = doc.FindValue(regName);
-	if (reg)
-	{
-		//cout << regName << endl;
-		for(YAML::Iterator moduleIt = reg->begin(); moduleIt != reg->end(); ++moduleIt)
-		{
-			const YAML::Node& module(*moduleIt);
-			modules.push_back(registrar.createFromYAML(module));
-		}
-	}
-	return regName;
-}
 
-//! Instantiate a module if its name is in the YAML file
-template<typename T>
-template<typename R>
-const std::string& PointMatcher<T>::ICPChainBase::createModuleFromRegistrar(const std::string& regName, const YAML::Node& doc, const R& registrar, boost::shared_ptr<typename R::TargetType>& module)
-{
-	const YAML::Node *reg = doc.FindValue(regName);
-	if (reg)
-	{
-		//cout << regName << endl;
-		module.reset(registrar.createFromYAML(*reg));
-	}
-	else
-		module.reset();
-	return regName;
-}
-#endif
-
-#if 0 // This yaml code is so old it does not compile	
-
-template<typename T>
-std::string PointMatcher<T>::ICPChainBase::nodeVal(const std::string& regName, const PointMatcherSupport::YAML::Node& doc)
-{
-	const YAML::Node *reg = doc.FindValue(regName);
-	if (reg)
-	{
-		std::string name;
-		Parametrizable::Parameters params;
-		PointMatcherSupport::getNameParamsFromYAML(*reg, name, params);
-		return name;
-	}
-	return "";
-}
-#endif
 
 template struct PointMatcher<float>::ICPChainBase;
 template struct PointMatcher<double>::ICPChainBase;

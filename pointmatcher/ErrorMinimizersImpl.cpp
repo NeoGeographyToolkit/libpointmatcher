@@ -137,7 +137,7 @@ T ErrorMinimizersImpl<T>::PointToPointErrorMinimizer::getOverlap() const
 		return this->weightedPointUsedRatio;
 	}
 
-	const BOOST_AUTO(noises, this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise"));
+	const auto noises = this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise");
 
 	const Vector dists = (this->lastErrorElements.reading.features.topRows(dim-1) - this->lastErrorElements.reference.features.topRows(dim-1)).colwise().norm();
 	const T mean = dists.sum()/nbPoints;
@@ -245,7 +245,7 @@ T ErrorMinimizersImpl<T>::PointToPointSimilarityErrorMinimizer::getOverlap() con
 		return this->weightedPointUsedRatio;
 	}
 
-	const BOOST_AUTO(noises, this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise"));
+	const auto noises = this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise");
 
 	const Vector dists = (this->lastErrorElements.reading.features.topRows(dim-1) - this->lastErrorElements.reference.features.topRows(dim-1)).colwise().norm();
 	const T mean = dists.sum()/nbPoints;
@@ -301,7 +301,7 @@ typename PointMatcher<T>::TransformationParameters ErrorMinimizersImpl<T>::Point
 	}
 
 	// Fetch normal vectors of the reference point cloud (with adjustment if needed)
-	const BOOST_AUTO(normalRef, mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim));
+	const auto normalRef = mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim);
 
 	// Note: Normal vector must be precalculated to use this error. Use appropriate input filter.
 	assert(normalRef.rows() > 0);
@@ -534,7 +534,7 @@ typename PointMatcher<T>::TransformationParameters ErrorMinimizersImpl<T>::Point
 	}
 
 	// Fetch normal vectors of the reference point cloud (with adjustment if needed)
-	const BOOST_AUTO(normalRef, mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim));
+	const auto normalRef = mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim);
 
 	// Note: Normal vector must be precalculated to use this error. Use appropriate input filter.
 	assert(normalRef.rows() > 0);
@@ -897,7 +897,7 @@ T ErrorMinimizersImpl<T>::PointToPointWithCovErrorMinimizer::getOverlap() const
 		return this->weightedPointUsedRatio;
 	}
 
-	const BOOST_AUTO(noises, this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise"));
+	const auto noises = this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise");
 	int count = 0;
 	for(int i=0; i < nbPoints; i++)
 	{
@@ -957,7 +957,7 @@ typename PointMatcher<T>::TransformationParameters ErrorMinimizersImpl<T>::Point
 	}
 
 	// Fetch normal vectors of the reference point cloud (with adjustment if needed)
-	const BOOST_AUTO(normalRef, mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim));
+	const auto normalRef = mPts.reference.getDescriptorViewByName("normals").topRows(forcedDim);
 
 	// Note: Normal vector must be precalculated to use this error. Use appropriate input filter.
 	assert(normalRef.rows() > 0);
@@ -1159,8 +1159,8 @@ T ErrorMinimizersImpl<T>::PointToPlaneWithCovErrorMinimizer::getOverlap() const
 		return this->weightedPointUsedRatio;
 	}
 
-	const BOOST_AUTO(noises, this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise"));
-	const BOOST_AUTO(normals, this->lastErrorElements.reading.getDescriptorViewByName("normals"));
+	const auto noises = this->lastErrorElements.reading.getDescriptorViewByName("simpleSensorNoise");
+	const auto normals = this->lastErrorElements.reading.getDescriptorViewByName("normals");
 	int count = 0;
 	for(int i=0; i < nbPoints; i++)
 	{

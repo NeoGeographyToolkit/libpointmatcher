@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Parametrizable.h"
 #include <boost/format.hpp>
-#include <boost/typeof/typeof.hpp>
 
 namespace PointMatcherSupport
 {
@@ -67,7 +66,7 @@ namespace PointMatcherSupport
 	//! Dump the documentation of these parameters to a stream
 	std::ostream& operator<< (std::ostream& o, const Parametrizable::ParametersDoc& p)
 	{
-		for (BOOST_AUTO(it,p.begin()); it != p.end(); ++it)
+		for (auto it = p.begin(); it != p.end(); ++it)
 			o << "- " << *it << endl;
 		return o;
 	}
@@ -172,7 +171,7 @@ namespace PointMatcherSupport
 		parametersDoc(paramsDoc)
 	{
 		// fill current parameters from either values passed as argument, or default value
-		for (BOOST_AUTO(it, parametersDoc.begin()); it != parametersDoc.end(); ++it)
+		for (auto it = parametersDoc.begin(); it != parametersDoc.end(); ++it)
 		{
 			const string& paramName(it->name);
 			Parameters::const_iterator paramIt(params.find(paramName));

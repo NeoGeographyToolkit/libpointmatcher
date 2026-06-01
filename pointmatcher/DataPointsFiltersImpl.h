@@ -98,10 +98,10 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "dim", "dimension on which the filter will be applied. x=0, y=1, z=2, radius=-1", "-1", "-1", "2", &P::Comp<int> )
-				( "maxDist", "maximum distance authorized. If dim is set to -1 (radius), the absolute value of minDist will be used. All points beyond that will be filtered.", "1", "-inf", "inf", &P::Comp<T> )
-			;
+			return {
+				{ "dim", "dimension on which the filter will be applied. x=0, y=1, z=2, radius=-1", "-1", "-1", "2", &P::Comp<int> },
+				{ "maxDist", "maximum distance authorized. If dim is set to -1 (radius), the absolute value of minDist will be used. All points beyond that will be filtered.", "1", "-inf", "inf", &P::Comp<T> },
+			};
 		}
 
 		const int dim;
@@ -122,10 +122,10 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "dim", "dimension on which the filter will be applied. x=0, y=1, z=2, radius=-1", "-1", "-1", "2", &P::Comp<int> )
-				( "minDist", "minimum value authorized. If dim is set to -1 (radius), the absolute value of minDist will be used. All points before that will be filtered.", "1", "-inf", "inf", &P::Comp<T> )
-			;
+			return {
+				{ "dim", "dimension on which the filter will be applied. x=0, y=1, z=2, radius=-1", "-1", "-1", "2", &P::Comp<int> },
+				{ "minDist", "minimum value authorized. If dim is set to -1 (radius), the absolute value of minDist will be used. All points before that will be filtered.", "1", "-inf", "inf", &P::Comp<T> },
+			};
 		}
 		
 		const int dim;
@@ -146,15 +146,15 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "xMin", "minimum value on x-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> )
-				( "xMax", "maximum value on x-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> )
-				( "yMin", "minimum value on y-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> )
-				( "yMax", "maximum value on y-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> )
-				( "zMin", "minimum value on z-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> )
-				( "zMax", "maximum value on z-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> )
-				( "removeInside", "If set to true (1), remove points inside the bounding box; else (0), remove points outside the bounding box", "1", "0", "1", P::Comp<bool> )
-			;
+			return {
+				{ "xMin", "minimum value on x-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> },
+				{ "xMax", "maximum value on x-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> },
+				{ "yMin", "minimum value on y-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> },
+				{ "yMax", "maximum value on y-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> },
+				{ "zMin", "minimum value on z-axis defining one side of the bounding box", "-1", "-inf", "inf", &P::Comp<T> },
+				{ "zMax", "maximum value on z-axis defining one side of the bounding box", "1", "-inf", "inf", &P::Comp<T> },
+				{ "removeInside", "If set to true (1), remove points inside the bounding box; else (0), remove points outside the bounding box", "1", "0", "1", P::Comp<bool> },
+			};
 		}
 
 		const T xMin;
@@ -180,10 +180,10 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "dim", "dimension on which the filter will be applied. x=0, y=1, z=2", "0", "0", "2", &P::Comp<unsigned> )
-				( "ratio", "maximum quantile authorized. All points beyond that will be filtered.", "0.5", "0.0000001", "0.9999999", &P::Comp<T> )
-			;
+			return {
+				{ "dim", "dimension on which the filter will be applied. x=0, y=1, z=2", "0", "0", "2", &P::Comp<unsigned> },
+				{ "ratio", "maximum quantile authorized. All points beyond that will be filtered.", "0.5", "0.0000001", "0.9999999", &P::Comp<T> },
+			};
 		}
 		
 		const unsigned dim;
@@ -204,9 +204,9 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "maxDensity", "Maximum density of points to target. Unit: number of points per m^3.", "10", "0.0000001", "inf", &P::Comp<T> )
-			;
+			return {
+				{ "maxDensity", "Maximum density of points to target. Unit: number of points per m^3.", "10", "0.0000001", "inf", &P::Comp<T> },
+			};
 		}
 		
 		const T maxDensity;
@@ -226,15 +226,15 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "knn", "number of nearest neighbors to consider, including the point itself", "5", "3", "2147483647", &P::Comp<unsigned> )
-				( "epsilon", "approximation to use for the nearest-neighbor search", "0", "0", "inf", &P::Comp<T> )
-				( "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" )
-				( "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" )
-				( "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" )
-				( "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" )
-				( "keepMatchedIds" , "whethen the identifiers of matches points should be added as descriptors to the resulting cloud", "0" )
-			;
+			return {
+				{ "knn", "number of nearest neighbors to consider, including the point itself", "5", "3", "2147483647", &P::Comp<unsigned> },
+				{ "epsilon", "approximation to use for the nearest-neighbor search", "0", "0", "inf", &P::Comp<T> },
+				{ "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" },
+				{ "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" },
+				{ "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" },
+				{ "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" },
+				{ "keepMatchedIds" , "whethen the identifiers of matches points should be added as descriptors to the resulting cloud", "0" },
+			};
 		}
 		
 		const unsigned knn;
@@ -265,17 +265,17 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.5", "0.0000001", "1.0", &P::Comp<T> )
-				( "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> )
-				( "samplingMethod", "if set to 0, random subsampling using the parameter ratio. If set to 1, bin subsampling with the resulting number of points being 1/knn.", "0", "0", "1", &P::Comp<unsigned> )
-				( "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" )
-				( "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" )
-				( "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" )
-				( "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" )
-				( "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" )
-				( "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" )
-			;
+			return {
+				{ "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.5", "0.0000001", "1.0", &P::Comp<T> },
+				{ "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> },
+				{ "samplingMethod", "if set to 0, random subsampling using the parameter ratio. If set to 1, bin subsampling with the resulting number of points being 1/knn.", "0", "0", "1", &P::Comp<unsigned> },
+				{ "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" },
+				{ "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" },
+				{ "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" },
+				{ "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" },
+				{ "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" },
+				{ "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" },
+			};
 		}
 		
 		const T ratio;
@@ -351,9 +351,9 @@ struct DataPointsFiltersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "towardCenter", "If set to true(1), all the normals will point inside the surface (i.e. toward the observation points).", "1", "0", "1", &P::Comp<bool> )
-			;
+			return {
+				{ "towardCenter", "If set to true(1), all the normals will point inside the surface (i.e. toward the observation points).", "1", "0", "1", &P::Comp<bool> },
+			};
 		}
 
 		OrientNormalsDataPointsFilter(const Parameters& params = Parameters());
@@ -373,9 +373,9 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "prob", "probability to keep a point, one over decimation factor ", "0.75", "0", "1", &P::Comp<T> )
-			;
+			return {
+				{ "prob", "probability to keep a point, one over decimation factor ", "0.75", "0", "1", &P::Comp<T> },
+			};
 		}
 		
 		const double prob;
@@ -399,10 +399,10 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-			( "seed", "srand seed", "1", "0", "2147483647", &P::Comp<unsigned> )
-			( "maxCount", "maximum number of points", "1000", "0", "2147483647", &P::Comp<unsigned> )
-			;
+			return {
+			{ "seed", "srand seed", "1", "0", "2147483647", &P::Comp<unsigned> },
+			{ "maxCount", "maximum number of points", "1000", "0", "2147483647", &P::Comp<unsigned> },
+			};
 		}
 
 		const unsigned maxCount;
@@ -423,11 +423,11 @@ struct DataPointsFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "startStep", "initial number of point to skip (initial decimation factor)", "10", "1", "2147483647", &P::Comp<unsigned> )
-				( "endStep", "maximal or minimal number of points to skip (final decimation factor)", "10", "1", "2147483647", &P::Comp<unsigned> )
-				( "stepMult", "multiplication factor to compute the new decimation factor for each iteration", "1", "0.0000001", "inf", &P::Comp<double> )
-			;
+			return {
+				{ "startStep", "initial number of point to skip (initial decimation factor)", "10", "1", "2147483647", &P::Comp<unsigned> },
+				{ "endStep", "maximal or minimal number of points to skip (final decimation factor)", "10", "1", "2147483647", &P::Comp<unsigned> },
+				{ "stepMult", "multiplication factor to compute the new decimation factor for each iteration", "1", "0.0000001", "inf", &P::Comp<double> },
+			};
 		}
 		
 		// number of steps to skip
@@ -456,9 +456,9 @@ struct DataPointsFiltersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "eps", "Small angle (in rad) around which a normal shoudn't be observable", "0.1", "0.0", "3.1416", &P::Comp<T> )
-			;
+			return {
+				{ "eps", "Small angle (in rad) around which a normal shoudn't be observable", "0.1", "0.0", "3.1416", &P::Comp<T> },
+			};
 		}
 
 		const T eps;
@@ -480,10 +480,10 @@ struct DataPointsFiltersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "sensorType", "Type of the sensor used. Choices: 0=Sick LMS-1xx, 1=Hokuyo URG-04LX, 2=Hokuyo UTM-30LX, 3=Kinect/Xtion", "0", "0", "2147483647", &P::Comp<unsigned> )
-				( "gain", "If the point cloud is coming from an untrusty source, you can use the gain to augment the uncertainty", "1", "1", "inf", &P::Comp<T> )
-			;
+			return {
+				{ "sensorType", "Type of the sensor used. Choices: 0=Sick LMS-1xx, 1=Hokuyo URG-04LX, 2=Hokuyo UTM-30LX, 3=Kinect/Xtion", "0", "0", "2147483647", &P::Comp<unsigned> },
+				{ "gain", "If the point cloud is coming from an untrusty source, you can use the gain to augment the uncertainty", "1", "1", "inf", &P::Comp<T> },
+			};
 		}
 	
 		const unsigned sensorType;
@@ -514,11 +514,11 @@ struct DataPointsFiltersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "x", "x-coordinate of sensor", "0" )
-				( "y", "y-coordinate of sensor", "0" )
-				( "z", "z-coordinate of sensor", "0" )
-			;
+			return {
+				{ "x", "x-coordinate of sensor", "0" },
+				{ "y", "y-coordinate of sensor", "0" },
+				{ "z", "z-coordinate of sensor", "0" },
+			};
 		}
 	
 		const T centerX;
@@ -561,13 +561,13 @@ struct DataPointsFiltersImpl
 
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-			( "vSizeX", "Dimension of each voxel cell in x direction", "1.0", "-inf", "inf", &P::Comp<T> )
-			( "vSizeY", "Dimension of each voxel cell in y direction", "1.0", "-inf", "inf", &P::Comp<T> )
-			( "vSizeZ", "Dimension of each voxel cell in z direction", "1.0", "-inf", "inf", &P::Comp<T> )
-			( "useCentroid", "If 1 (true), down-sample by using centroid of voxel cell.  If false (0), use center of voxel cell.", "1", "0", "1", P::Comp<bool> )
-			( "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1", "0", "1", P::Comp<bool> )
-			;
+			return {
+			{ "vSizeX", "Dimension of each voxel cell in x direction", "1.0", "-inf", "inf", &P::Comp<T> },
+			{ "vSizeY", "Dimension of each voxel cell in y direction", "1.0", "-inf", "inf", &P::Comp<T> },
+			{ "vSizeZ", "Dimension of each voxel cell in z direction", "1.0", "-inf", "inf", &P::Comp<T> },
+			{ "useCentroid", "If 1 (true), down-sample by using centroid of voxel cell.  If false (0), use center of voxel cell.", "1", "0", "1", P::Comp<bool> },
+			{ "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1", "0", "1", P::Comp<bool> },
+			};
 		}
 
 		const T vSizeX;
@@ -600,24 +600,24 @@ struct DataPointsFiltersImpl
 	  }
 	  inline static const ParametersDoc availableParameters()
 	  {
-	    return boost::assign::list_of<ParameterDoc>
-	    ( "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.5", "0.0000001", "0.9999999", &P::Comp<T> )
-	    ( "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> )
-	    ( "samplingMethod", "if set to 0, random subsampling using the parameter ratio. If set to 1, bin subsampling with the resulting number of points being 1/knn.", "0", "0", "1", &P::Comp<unsigned> )
-	    ( "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" )
-	    ( "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" )
-	    ( "maxTimeWindow", "maximum spread of times in a surfel", "inf" )
-	    ( "minPlanarity", "to what extend planarity of surfels needs to be enforced", "0")
-	    ( "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" )
-	    ( "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepMeans", "whether the means should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepCovariances", "whether the covariances should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepWeights", "whether the original number of points should be added as descriptors to the resulting cloud", "0" )
-	    ( "keepShapes", "whether the shape parameters of cylindricity (C), sphericality (S) and planarity (P) shall be calculated", "0" )
-	    ( "keepIndices", "whether the indices of points an ellipsoid is constructed of shall be kept", "0" )
-	    ;
+	    return {
+	    { "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.5", "0.0000001", "0.9999999", &P::Comp<T> },
+	    { "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> },
+	    { "samplingMethod", "if set to 0, random subsampling using the parameter ratio. If set to 1, bin subsampling with the resulting number of points being 1/knn.", "0", "0", "1", &P::Comp<unsigned> },
+	    { "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" },
+	    { "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" },
+	    { "maxTimeWindow", "maximum spread of times in a surfel", "inf" },
+	    { "minPlanarity", "to what extend planarity of surfels needs to be enforced", "0"},
+	    { "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" },
+	    { "keepDensities", "whether the point densities should be added as descriptors to the resulting cloud", "0" },
+	    { "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" },
+	    { "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" },
+	    { "keepMeans", "whether the means should be added as descriptors to the resulting cloud", "0" },
+	    { "keepCovariances", "whether the covariances should be added as descriptors to the resulting cloud", "0" },
+	    { "keepWeights", "whether the original number of points should be added as descriptors to the resulting cloud", "0" },
+	    { "keepShapes", "whether the shape parameters of cylindricity (C), sphericality (S) and planarity (P) shall be calculated", "0" },
+	    { "keepIndices", "whether the indices of points an ellipsoid is constructed of shall be kept", "0" },
+	    };
 	  }
 
 	  const T ratio;
@@ -649,8 +649,8 @@ struct DataPointsFiltersImpl
     {
       typedef std::vector<int> Indices;
       typedef typename DataPoints::View View;
-      typedef typename Eigen::Matrix<boost::int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
-      typedef typename Eigen::Matrix<boost::int64_t, 1, Eigen::Dynamic> Int64Vector;
+      typedef typename Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
+      typedef typename Eigen::Matrix<int64_t, 1, Eigen::Dynamic> Int64Vector;
 
       Indices indices;
       Indices indicesToKeep;
@@ -712,23 +712,23 @@ struct DataPointsFiltersImpl
     }
     inline static const ParametersDoc availableParameters()
     {
-      return boost::assign::list_of<ParameterDoc>
-      ( "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.1", "0.0000001", "0.9999999", &P::Comp<T> )
-      ( "radius", "is the radius of the gestalt descriptor, will be divided into 4 circular and 8 radial bins = 32 bins", "5", "0.1", "2147483647", &P::Comp<T> )
-      ( "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> )
-      ( "vSizeX", "Dimension of each voxel cell in x direction", "1.0", "-inf", "inf", &P::Comp<T> )
-      ( "vSizeY", "Dimension of each voxel cell in y direction", "1.0", "-inf", "inf", &P::Comp<T> )
-      ( "vSizeZ", "Dimension of each voxel cell in z direction", "1.0", "-inf", "inf", &P::Comp<T> )
-      ( "keepMeans", "whether the means should be added as descriptors to the resulting cloud", "0" )
-      ( "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" )
-      ( "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" )
-      ( "maxTimeWindow", "maximum spread of times in a surfel", "inf" )
-      ( "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" )
-      ( "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" )
-      ( "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" )
-      ( "keepCovariances", "whether the covariances should be added as descriptors to the resulting cloud", "0" )
-      ( "keepGestaltFeatures", "whether the Gestalt features shall be added to the resulting cloud", "1" )
-      ;
+      return {
+      { "ratio", "ratio of points to keep with random subsampling. Matrix (normal, density, etc.) will be associated to all points in the same bin.", "0.1", "0.0000001", "0.9999999", &P::Comp<T> },
+      { "radius", "is the radius of the gestalt descriptor, will be divided into 4 circular and 8 radial bins = 32 bins", "5", "0.1", "2147483647", &P::Comp<T> },
+      { "knn", "determined how many points are used to compute the normals. Direct link with the rapidity of the computation (large = fast). Technically, limit over which a box is splitted in two", "7", "3", "2147483647", &P::Comp<unsigned> },
+      { "vSizeX", "Dimension of each voxel cell in x direction", "1.0", "-inf", "inf", &P::Comp<T> },
+      { "vSizeY", "Dimension of each voxel cell in y direction", "1.0", "-inf", "inf", &P::Comp<T> },
+      { "vSizeZ", "Dimension of each voxel cell in z direction", "1.0", "-inf", "inf", &P::Comp<T> },
+      { "keepMeans", "whether the means should be added as descriptors to the resulting cloud", "0" },
+      { "maxBoxDim", "maximum length of a box above which the box is discarded", "inf" },
+      { "averageExistingDescriptors", "whether the filter keep the existing point descriptors and average them or should it drop them", "1" },
+      { "maxTimeWindow", "maximum spread of times in a surfel", "inf" },
+      { "keepNormals", "whether the normals should be added as descriptors to the resulting cloud", "1" },
+      { "keepEigenValues", "whether the eigen values should be added as descriptors to the resulting cloud", "0" },
+      { "keepEigenVectors", "whether the eigen vectors should be added as descriptors to the resulting cloud", "0" },
+      { "keepCovariances", "whether the covariances should be added as descriptors to the resulting cloud", "0" },
+      { "keepGestaltFeatures", "whether the Gestalt features shall be added to the resulting cloud", "1" },
+      };
     }
 
     const T ratio;
@@ -763,8 +763,8 @@ struct DataPointsFiltersImpl
     {
       typedef std::vector<int> Indices;
       typedef typename DataPoints::View View;
-      typedef typename Eigen::Matrix<boost::int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
-      typedef typename Eigen::Matrix<boost::int64_t, 1, Eigen::Dynamic> Int64Vector;
+      typedef typename Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
+      typedef typename Eigen::Matrix<int64_t, 1, Eigen::Dynamic> Int64Vector;
 
       Indices indices;
       Indices indicesToKeep;
@@ -823,11 +823,11 @@ struct DataPointsFiltersImpl
     }
     inline static const ParametersDoc availableParameters()
     {
-      return boost::assign::list_of<ParameterDoc>
-      ( "descName", "Descriptor name used to cut points", "none")
-      ( "useLargerThan", "If set to 1 (true), points with values above the 'threshold' will be cut.  If set to 0 (false), points with values below the 'threshold' will be cut.", "1", "0", "1", P::Comp<bool>)
-      ( "threshold", "Value at which to cut.", "0", "-inf", "inf", &P::Comp<T>)
-      ;
+      return {
+      { "descName", "Descriptor name used to cut points", "none"},
+      { "useLargerThan", "If set to 1 (true), points with values above the 'threshold' will be cut.  If set to 0 (false), points with values below the 'threshold' will be cut.", "1", "0", "1", P::Comp<bool>},
+      { "threshold", "Value at which to cut.", "0", "-inf", "inf", &P::Comp<T>},
+      };
     }
 
     const std::string descName;

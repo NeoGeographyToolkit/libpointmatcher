@@ -96,9 +96,9 @@ struct ErrorMinimizersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>)
-			;
+			return {
+				{ "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>},
+			};
 		}
 
 		const bool force2D;
@@ -117,9 +117,9 @@ struct ErrorMinimizersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>)
-			;
+			return {
+				{ "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>},
+			};
 		}
 
 		const bool force2D;
@@ -138,9 +138,9 @@ struct ErrorMinimizersImpl
 
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "sensorStdDev", "sensor standard deviation", "0.01", "0.", "inf", &P::Comp<T>)
-			;
+			return {
+				{ "sensorStdDev", "sensor standard deviation", "0.01", "0.", "inf", &P::Comp<T>},
+			};
 		}
 
 	    const T sensorStdDev;
@@ -162,10 +162,10 @@ struct ErrorMinimizersImpl
 		
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>)
-				( "sensorStdDev", "sensor standard deviation", "0.01", "0.", "inf", &P::Comp<T>)
-			;
+			return {
+				{ "force2D", "If set to true(1), the minimization will be force to give a solution in 2D (i.e., on the XY-plane) even with 3D inputs.", "0", "0", "1", &P::Comp<bool>},
+				{ "sensorStdDev", "sensor standard deviation", "0.01", "0.", "inf", &P::Comp<T>},
+			};
 		}
 
 		const bool force2D;

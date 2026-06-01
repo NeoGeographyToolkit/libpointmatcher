@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Bibliography.h"
 
-#include <boost/typeof/typeof.hpp>
 #include <boost/lexical_cast.hpp>
 #define BOOST_ASSIGN_MAX_PARAMS 6
 #include <boost/assign/list_of.hpp>
@@ -51,14 +50,14 @@ namespace PointMatcherSupport
 	template<typename M>
 	bool contains(const M& m, const typename M::key_type& k)
 	{
-		BOOST_AUTO(it,m.find(k));
+		auto it = m.find(k);
 		return (it!=m.end());
 	}
 	
 	template<typename M>
 	const typename M::mapped_type& get(const M& m, const typename M::key_type& k)
 	{
-		BOOST_AUTO(it,m.find(k));
+		auto it = m.find(k);
 		if (it!=m.end())
 			return it->second;
 		else

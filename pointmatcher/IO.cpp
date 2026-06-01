@@ -132,7 +132,7 @@ CsvElements parseCsvWithHeader(const std::string& fileName)
 
 			for(unsigned int i = 0; i < parsedLine.size(); i++)
 			{
-				for(BOOST_AUTO(it,keywordCols.begin()); it!=keywordCols.end(); it++)
+				for(auto it = keywordCols.begin(); it!=keywordCols.end(); it++)
 				{
 					if(i == (*it).second)
 					{
@@ -147,7 +147,7 @@ CsvElements parseCsvWithHeader(const std::string& fileName)
 	
 	// Use for debug
 	
-	//for(BOOST_AUTO(it,data.begin()); it!=data.end(); it++)
+	//for(auto it = data.begin(); it!=data.end(); it++)
 	//{
 	//	cout << "--------------------------" << endl;
 	//	cout << "Header: |" << (*it).first << "|" << endl;
@@ -815,7 +815,7 @@ typename PointMatcher<T>::DataPoints PointMatcherIO<T>::loadCSV(std::istream& is
 						descriptors(matrixRow, matrixCol) = lexical_cast_scalar_to_string<T>(token);
 						break;
 					case TIME:
-						times(matrixRow, matrixCol) = lexical_cast_scalar_to_string<boost::int64_t>(token);
+						times(matrixRow, matrixCol) = lexical_cast_scalar_to_string<int64_t>(token);
 						break;
 					default:
 						throw runtime_error(string("CSV parse error: encounter a type different from FEATURE, DESCRIPTOR and TIME. Implementation not supported. See the definition of 'enum PMPropTypes'"));

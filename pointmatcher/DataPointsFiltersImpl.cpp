@@ -96,8 +96,8 @@ void DataPointsFiltersImpl<T>::RemoveNaNDataPointsFilter::inPlaceFilter(
 	int j = 0;
 	for (int i = 0; i < nbPointsIn; ++i)
 	{
-		const BOOST_AUTO(colArray, cloud.features.col(i).array());
-		const BOOST_AUTO(hasNaN, !(colArray == colArray).all());
+		const auto colArray = cloud.features.col(i).array();
+		const auto hasNaN = !(colArray == colArray).all();
 		if (!hasNaN)
 		{
 			cloud.setColFrom(j, cloud, i);
@@ -1189,7 +1189,7 @@ void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::buildNew(BuildData& da
 template<typename T>
 void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::fuseRange(BuildData& data, const int first, const int last) const
 {
-  typedef typename Eigen::Matrix<boost::int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
+  typedef typename Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
 
   const int colCount(last-first);
   const int featDim(data.features.rows());
@@ -1202,7 +1202,7 @@ void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::fuseRange(BuildData& d
     t.col(i) = data.times.col(data.indices[first + i]); //, 0);
   }
   const Vector box = d.rowwise().maxCoeff() - d.rowwise().minCoeff();
-  const boost::int64_t timeBox = t.maxCoeff() - t.minCoeff();
+  const int64_t timeBox = t.maxCoeff() - t.minCoeff();
 
   const T boxDim(box.maxCoeff());
   // drop box if it is too large or max timeframe is exceeded
@@ -1214,9 +1214,9 @@ void DataPointsFiltersImpl<T>::ElipsoidsDataPointsFilter::fuseRange(BuildData& d
   const Vector mean = d.rowwise().sum() / T(colCount);
   const Matrix NN = (d.colwise() - mean);
 
-  boost::int64_t minTime = t.minCoeff();
-  boost::int64_t maxTime = t.maxCoeff();
-  boost::int64_t meanTime = t.sum() / T(colCount);
+  int64_t minTime = t.minCoeff();
+  int64_t maxTime = t.maxCoeff();
+  int64_t meanTime = t.sum() / T(colCount);
 
   // compute covariance
   const Matrix C(NN * NN.transpose());
@@ -1677,7 +1677,7 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::buildNew(BuildData& data
 template<typename T>
 void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& data, DataPoints& input, const int first, const int last) const
 {
-  typedef typename Eigen::Matrix<boost::int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
+  typedef typename Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
 
   const int featDim(data.features.rows());
   std::vector<int> indicesToKeepStrict;
@@ -1722,9 +1722,9 @@ void DataPointsFiltersImpl<T>::GestaltDataPointsFilter::fuseRange(BuildData& dat
 
     const Vector mean = d.rowwise().sum() / T(colCount);
     const Matrix NN = d.colwise() - mean;
-    boost::int64_t minTime = t.minCoeff();
-    boost::int64_t maxTime = t.maxCoeff();
-    boost::int64_t meanTime = t.sum() / T(colCount);
+    int64_t minTime = t.minCoeff();
+    int64_t maxTime = t.maxCoeff();
+    int64_t meanTime = t.sum() / T(colCount);
     // compute covariance
     const Matrix C(NN * NN.transpose());
     Vector eigenVa = Vector::Identity(featDim-1, 1);
@@ -1954,8 +1954,8 @@ void DataPointsFiltersImpl<T>::OrientNormalsDataPointsFilter::inPlaceFilter(
 	if (!cloud.descriptorExists("observationDirections"))
 		throw InvalidField("OrientNormalsDataPointsFilter: Error, cannot find observation directions in descriptors.");
 
-	BOOST_AUTO(normals, cloud.getDescriptorViewByName("normals"));
-	const BOOST_AUTO(observationDirections, cloud.getDescriptorViewByName("observationDirections"));
+	auto normals = cloud.getDescriptorViewByName("normals");
+	const auto observationDirections = cloud.getDescriptorViewByName("observationDirections");
 	assert(normals.rows() == observationDirections.rows());
 	for (int i = 0; i < cloud.features.cols(); i++)
 	{
@@ -2195,7 +2195,7 @@ void DataPointsFiltersImpl<T>::ShadowDataPointsFilter::inPlaceFilter(
 
 	const int dim = cloud.features.rows();
 
-	const BOOST_AUTO(normals, cloud.getDescriptorViewByName("normals"));
+	const auto normals = cloud.getDescriptorViewByName("normals");
 	int j = 0;
 
 	for(int i=0; i < cloud.features.cols(); i++)
@@ -2256,7 +2256,7 @@ void DataPointsFiltersImpl<T>::SimpleSensorNoiseDataPointsFilter::inPlaceFilter(
 	DataPoints& cloud)
 {
 	cloud.allocateDescriptor("simpleSensorNoise", 1);
-	BOOST_AUTO(noise, cloud.getDescriptorViewByName("simpleSensorNoise"));
+	auto noise = cloud.getDescriptorViewByName("simpleSensorNoise");
 
 	switch(sensorType)
 	{
@@ -2356,7 +2356,7 @@ void DataPointsFiltersImpl<T>::ObservationDirectionDataPointsFilter::inPlaceFilt
 		center[2] = centerZ;
 
 	cloud.allocateDescriptor("observationDirections", dim);
-	BOOST_AUTO(observationDirections, cloud.getDescriptorViewByName("observationDirections"));
+	auto observationDirections = cloud.getDescriptorViewByName("observationDirections");
 
 	for (int i = 0; i < cloud.features.cols(); i++)
 	{

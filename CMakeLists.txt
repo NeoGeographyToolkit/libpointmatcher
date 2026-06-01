@@ -167,52 +167,6 @@ if (USE_OPEN_CL)
 endif(USE_OPEN_CL)
 
 
-# Do not use yaml, as the yaml code is too old to compile
-#--------------------
-# DEPENDENCY: yaml-cpp (local or system, optional)
-#--------------------
-#option(USE_SYSTEM_YAML_CPP "Use system version of yaml-cpp rather than one packaged with libpointmatcher" FALSE)
-
-# if(USE_SYSTEM_YAML_CPP)
-#     message(STATUS "Looking for yaml-cpp on system")
-#     #find_path(yaml-cpp_INCLUDE_DIRS yaml-cpp/yaml.h
-#     #        /usr/local/include
-#     #)
-#     #find_library(yaml-cpp_LIBRARIES yaml-cpp PATHS
-#     #        /usr/local/lib
-#     #)
-#     set(yaml-cpp_INCLUDE_DIRS "${INSTALL_INCLUDE_DIR}/yaml-cpp/")
-#     set(yaml-cpp_LIBRARIES "${INSTALL_LIB_DIR}")
-#     if(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-#             include_directories(${yaml-cpp_INCLUDE_DIRS})
-            #  add_definitions(-DSYSTEM_YAML_CPP)
-            #  set(yamlcpp_FOUND)
-            #  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} -lyaml-cpp)
-#             message("-- yaml-cpp found, text-based configuration enabled")
-#     else(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-#             message("-- yaml-cpp not found, text-based configuration and related applications disabled")
-#     endif(yaml-cpp_INCLUDE_DIRS AND yaml-cpp_LIBRARIES)
-# else(USE_SYSTEM_YAML_CPP)
-#         include_directories(contrib/yaml-cpp-pm/include)
-        
-# #note: this is not working....
-#         #get_property(yaml-cpp-pm_INCLUDE TARGET yaml-cpp-pm PROPERTY INCLUDE_DIRECTORIES)
-#         #include_directories(${yaml-cpp-pm_INCLUDE})
-        
-#         # get_property(yaml-cpp-pm_LIB TARGET yaml-cpp-pm PROPERTY LOCATION)
-#         set (EXTERNAL_LIBS ${EXTERNAL_LIBS} ${yaml-cpp-pm_LIB} )
-#         set (EXTRA_DEPS ${EXTRA_DEPS} yaml-cpp-pm)
-#         # set(yamlcpp_FOUND)
-
-#         # get_property(yaml-cpp-pm_VERSION TARGET yaml-cpp-pm PROPERTY VERSION)
-#         # message("-- using built-in yaml-cpp, version ${yaml-cpp-pm_VERSION}")
-#         # message("   -- text-based configuration enabled")
-# endif(USE_SYSTEM_YAML_CPP)
-
-#--------------------
-# DEPENDENCY: rt (optional)
-#--------------------
-# link rt support if POSIX timers are used
 check_symbol_exists(_POSIX_TIMERS "unistd.h;time.h" POSIX_TIMERS)
 if (POSIX_TIMERS AND NOT APPLE)
 	set(EXTERNAL_LIBS ${EXTERNAL_LIBS} rt)
@@ -237,7 +191,6 @@ set(POINTMATCHER_SRC
 	pointmatcher/TransformationChecker.cpp
 	pointmatcher/Inspector.cpp
 	pointmatcher/IO.cpp
-	pointmatcher/Bibliography.cpp
 	pointmatcher/Timer.cpp
 	pointmatcher/Histogram.cpp
 	pointmatcher/Parametrizable.cpp
@@ -265,15 +218,12 @@ if (SHARED_LIBS)
 					LIBRARY DESTINATION ${INSTALL_LIB_DIR}
 					RUNTIME DESTINATION ${INSTALL_BIN_DIR})
 							target_link_libraries(pointmatcher ${EXTERNAL_LIBS})
-	#install(TARGETS pointmatcher LIBRARY DESTINATION ${INSTALL_LIB_DIR})
 else(SHARED_LIBS)
 	add_library(pointmatcher ${POINTMATCHER_SRC} ${POINTMATCHER_HEADERS} )
 	install(TARGETS pointmatcher ARCHIVE DESTINATION ${INSTALL_LIB_DIR})
 endif(SHARED_LIBS)
 
-# link all libraries to libpointmatcher
 add_definitions(-Wall)
-#target_link_libraries(pointmatcher ${yaml-cpp_LIBRARIES} ${libnabo_LIBRARIES})
 target_link_libraries(pointmatcher ${EXTERNAL_LIBS})
 
 if(EXTRA_DEPS)
@@ -281,9 +231,6 @@ if(EXTRA_DEPS)
 endif(EXTRA_DEPS)
 set_target_properties(pointmatcher PROPERTIES VERSION "${PROJECT_VERSION}" SOVERSION 1)
 
-# # create doc before installing
-# set(DOC_INSTALL_TARGET "share/doc/${PROJECT_NAME}/api" CACHE STRING "Target where to install doxygen documentation")
-#add_dependencies(pointmatcher doc)
 install(FILES
 	pointmatcher/PointMatcher.h
 	pointmatcher/PointMatcherPrivate.h
@@ -294,116 +241,4 @@ install(FILES
 	DESTINATION ${INSTALL_INCLUDE_DIR}/pointmatcher
 )
 install(FILES README.md DESTINATION share/doc/${PROJECT_NAME})
-# if (DOXYGEN_FOUND)
-# 	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/html DESTINATION ${DOC_INSTALL_TARGET})
-# endif (DOXYGEN_FOUND)
 
-
-#=============== trigger other makefile ======================
-
-# Example programs
-#add_subdirectory(examples)
-# Evaluation programs
-#add_subdirectory(evaluations)
-# Unit testing
-#add_subdirectory(utest)
-
-
-#=================== allow find_package() =========================
-# 
-# the following case be used in an external project requiring libnabo:
-#  ...
-#  find_package(libpointmatcher) 
-#  include_directories(${libpointmatcher_INCLUDE_DIRS}) 
-#  target_link_libraries(executableName ${libpointmatcher_LIBRARIES})
-#  ...
-
-# 1- local build #
-
-# Register the local build in case one doesn't use "make install"
-# export(PACKAGE libpointmatcher)
-
-# # Create variable for the local build tree
-# get_property(CONF_INCLUDE_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-
-# # Create variable with the library location
-# get_target_property(POINTMATCHER_LIB pointmatcher LOCATION)
-
-# # Configure config file for local build tree
-# configure_file(libpointmatcherConfig.cmake.in
-#   "${PROJECT_BINARY_DIR}/libpointmatcherConfig.cmake" @ONLY)
-
-# 2- installation build #
-
-# # Change the include location for the case of an install location
-# set(CONF_INCLUDE_DIRS ${INSTALL_INCLUDE_DIR} ${CONF_INCLUDE_DIRS} )
-
-# #FIXME: this will only be applied to installed files. Confirm that we want that.
-# # gather all the includes but remove ones in the source tree
-# # because we added an include for the local yaml-cpp-pm we should also remove it
-# list(REMOVE_ITEM CONF_INCLUDE_DIRS ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/contrib/yaml-cpp-pm/include)
-
-# if(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
-#   list(REMOVE_ITEM EXTERNAL_LIBS ${yaml-cpp-pm_LIB})
-# endif(SHARED_LIBS AND (NOT USE_SYSTEM_YAML_CPP))
-
-# # Change the library location for an install location
-# get_filename_component(POINTMATCHER_LIB_NAME ${POINTMATCHER_LIB} NAME)
-# set(POINTMATCHER_LIB ${INSTALL_LIB_DIR}/${POINTMATCHER_LIB_NAME})
-
-# # We put the generated file for installation in a different repository (i.e., ./CMakeFiles/)
-# configure_file(libpointmatcherConfig.cmake.in
-#   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" @ONLY)
-
-# # The same versioning file can be used for both cases
-# configure_file(libpointmatcherConfigVersion.cmake.in
-#   "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" @ONLY)
- 
-
-# # Install the libpointmatcherConfig.cmake and libpointmatcherConfigVersion.cmake
-# install(
-#   FILES
-#     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake"
-#     "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake"
-#   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev
-# )
-
-# # useful for TRADR european project. TODO: check to use the other install
-# # required for ros deployment, too
-# install (
-#   FILES 
-#     "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/libpointmatcherConfig.cmake" 
-#     "${PROJECT_BINARY_DIR}/libpointmatcherConfigVersion.cmake" 
-#   DESTINATION "share/${PROJECT_NAME}/cmake/"
-# )
-
-# #Handle pkg-config file
-# set(LIBRARY_CC_ARGS "")
-# foreach(_LIB IN LISTS POINTMATCHER_LIB EXTERNAL_LIBS)
-#   get_filename_component(_FILE_NAME ${_LIB} NAME)
-#   if(${_FILE_NAME} STREQUAL ${_LIB}) # not an absolute path 
-#     set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} -l${_LIB}") 
-#   else()
-#     set(LIBRARY_CC_ARGS "${LIBRARY_CC_ARGS} ${_LIB}")
-#   endif()
-# endforeach()
-# unset(_LIB)
-# unset(_FILE_NAME)
-
-# configure_file(pointmatcher.pc.in libpointmatcher.pc @ONLY)
-# configure_file(pointmatcher.pc.in pointmatcher.pc @ONLY) # for backward compatibility
-# install(FILES 
-#   ${CMAKE_BINARY_DIR}/libpointmatcher.pc 
-#   ${CMAKE_BINARY_DIR}/pointmatcher.pc # for backward compatibility
-#   DESTINATION lib/pkgconfig
-# )
-# unset(LIBRARY_CC_ARGS)
-
-# #====================== uninstall target ===============================
-# configure_file(
-#     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-#     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-#     IMMEDIATE @ONLY)
-
-# add_custom_target(uninstall
-#     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)

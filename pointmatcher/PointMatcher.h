@@ -39,7 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef EIGEN_USE_NEW_STDVECTOR
 #define EIGEN_USE_NEW_STDVECTOR
 #endif // EIGEN_USE_NEW_STDVECTOR
-//#define EIGEN2_SUPPORT
 
 //TODO: investigate if that causes more problems down the road
 #define EIGEN_NO_DEBUG
@@ -50,15 +49,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nabo/nabo.h"
 #include <mutex>
-//#include <mutex>
 
 #include <stdexcept>
 #include <limits>
 #include <iostream>
 #include <ostream>
 #include <memory>
-//#include <cstdint>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 #include "Parametrizable.h"
 #include "Registrar.h"
@@ -81,8 +78,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //! Functions and classes that are not dependant on scalar type are defined in this namespace
 namespace PointMatcherSupport
 {
-	using boost::assign::list_of;
-	using boost::assign::map_list_of;
 	// TODO: gather all exceptions
 
 	//! An exception thrown when one tries to use a module type that does not exist
@@ -98,12 +93,12 @@ namespace PointMatcherSupport
 		TransformationError(const std::string& reason);
 	};
 
-	//! A vector of boost::shared_ptr<S> that behaves like a std::vector<S>
+	//! A vector of std::shared_ptr<S> that behaves like a std::vector<S>
 	template<typename S>
-	struct SharedPtrVector: public std::vector<boost::shared_ptr<S> >
+	struct SharedPtrVector: public std::vector<std::shared_ptr<S> >
 	{
 		//! Add an instance of S to the vector, take ownership
-		void push_back(S* v) { std::vector<boost::shared_ptr<S> >::push_back(boost::shared_ptr<S>(v)); }
+		void push_back(S* v) { std::vector<std::shared_ptr<S> >::push_back(std::shared_ptr<S>(v)); }
 	};
 	
 	//! The logger interface, used to output warnings and informations
@@ -176,7 +171,7 @@ struct PointMatcher
 	//! A dense integer matrix
 	typedef typename Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> IntMatrix;
 	//! A dense signed 64-bits matrix
-	typedef typename Eigen::Matrix<boost::int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
+	typedef typename Eigen::Matrix<int64_t, Eigen::Dynamic, Eigen::Dynamic> Int64Matrix;
 	
 	//! A matrix holding the parameters a transformation.
 	/**
@@ -637,11 +632,11 @@ struct PointMatcher
 		DataPointsFilters readingStepDataPointsFilters; //!< filters for reading, applied at each step
 		DataPointsFilters referenceDataPointsFilters; //!< filters for reference
 		Transformations transformations; //!< transformations
-		boost::shared_ptr<Matcher> matcher; //!< matcher
+		std::shared_ptr<Matcher> matcher; //!< matcher
 		OutlierFilters outlierFilters; //!< outlier filters
-		boost::shared_ptr<ErrorMinimizer> errorMinimizer; //!< error minimizer
+		std::shared_ptr<ErrorMinimizer> errorMinimizer; //!< error minimizer
 		TransformationCheckers transformationCheckers; //!< transformation checkers
-		boost::shared_ptr<Inspector> inspector; //!< inspector
+		std::shared_ptr<Inspector> inspector; //!< inspector
 		
 		virtual ~ICPChainBase();
 
@@ -661,9 +656,6 @@ struct PointMatcher
                                                        DataPoints& reading, Matrix & errors //in-out
                                                        );
 
-#if 0 // this yaml code is so old it does not compile
-		void loadFromYaml(std::istream& in);
-#endif
 		
 		unsigned getPrefilteredReadingPtsCount() const;
 		unsigned getPrefilteredReferencePtsCount() const;
@@ -676,20 +668,6 @@ struct PointMatcher
 		
 		void cleanup();
 		
-#if 0 // This yaml code is so old it does not compile
-        virtual void loadAdditionalYAMLContent(PointMatcherSupport::YAML::Node& doc);
-		
-		//! Instantiate modules if their names are in the YAML file
-		template<typename R>
-        const std::string& createModulesFromRegistrar(const std::string& regName, const PointMatcherSupport::YAML::Node& doc, const R& registrar, PointMatcherSupport::SharedPtrVector<typename R::TargetType>& modules);
-		
-		//! Instantiate a module if its name is in the YAML file
-		template<typename R>
-        const std::string& createModuleFromRegistrar(const std::string& regName, const PointMatcherSupport::YAML::Node& doc, const R& registrar, boost::shared_ptr<typename R::TargetType>& module);
-		
-		//! Get the value of a field in a node
-        std::string nodeVal(const std::string& regName, const PointMatcherSupport::YAML::Node& doc);
-#endif
 	};
 	
 	//! ICP algorithm

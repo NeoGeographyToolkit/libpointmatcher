@@ -39,38 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Parametrizable.h"
 #include "PointMatcher.h"
 #include <boost/format.hpp>
-#include <boost/typeof/typeof.hpp>
-
-#if 0 // This yaml code is so old it does not compile
-
-#ifdef SYSTEM_YAML_CPP
-	namespace YAML
-	{
-		class Node;
-	}
-#else
-	namespace YAML_PM
-	{
-		class Node;
-	}
-#endif // HAVE_YAML_CPP
-#endif
 
 namespace PointMatcherSupport
 {
-
-#if 0 // This yaml code is so old that it does not compile
-
-#ifdef SYSTEM_YAML_CPP
-	namespace YAML = ::YAML;
-#else
-	namespace YAML = ::YAML_PM;
-#endif
-
-	//! Retrieve name and parameters from a yaml node
-	void getNameParamsFromYAML(const YAML::Node& module, std::string& name, Parametrizable::Parameters& params);
-#endif	
-
 	//! An exception thrown when one tries to instanciate an element that does not exist in the registrar
 	struct InvalidElement: std::runtime_error
 	{
@@ -106,7 +77,7 @@ namespace PointMatcherSupport
 				C* instance(new C(params));
 				
 				// check that there was no unsed parameter
-				for (BOOST_AUTO(it, params.begin()); it != params.end() ;++it)
+				for (auto it = params.begin(); it != params.end() ;++it)
 				{
 					if (instance->parametersUsed.find(it->first) == instance->parametersUsed.end())
 						throw Parametrizable::InvalidParameter(
@@ -132,7 +103,7 @@ namespace PointMatcherSupport
 		{
 			virtual Interface* createInstance(const std::string& className, const Parametrizable::Parameters& params) const
 			{
-				for (BOOST_AUTO(it, params.begin()); it != params.end() ;++it)
+				for (auto it = params.begin(); it != params.end() ;++it)
 					throw Parametrizable::InvalidParameter(
 							(boost::format("Parameter %1% was set but module %2% dos not use any parameter") % it->first % className).str()
 						);
@@ -156,7 +127,7 @@ namespace PointMatcherSupport
 		//! Destructor, remove all classes descriptors 
 		~Registrar()
 		{
-			for (BOOST_AUTO(it, classes.begin()); it != classes.end(); ++it)
+			for (auto it = classes.begin(); it != classes.end(); ++it)
 				delete it->second;
 		}
 		//! Register a class by storing an instance of a descriptor helper class
@@ -168,7 +139,7 @@ namespace PointMatcherSupport
 		//! Return a descriptor following a name, throw an exception if name is invalid
 		const ClassDescriptor* getDescriptor(const std::string& name) const
 		{
-			BOOST_AUTO(it, classes.find(name));
+			auto it = classes.find(name);
 			if (it == classes.end())
 			{
 				std::cerr << "No element named " << name << " is registered. Known ones are:\n";
@@ -187,17 +158,6 @@ namespace PointMatcherSupport
 		}
 				
 		//! Create an instance from a YAML node
-#if 0 // This yaml code is so old it does not compile
-        Interface* createFromYAML(const YAML::Node& module) const
-		{
-			std::string name;
-			Parametrizable::Parameters params;
-
-			getNameParamsFromYAML(module, name, params);
-			
-			return create(name, params);
-		}
-#endif
 				
 		//! Get the description of a class
 		const std::string getDescription(const std::string& name) const
@@ -208,7 +168,7 @@ namespace PointMatcherSupport
 		//! Print the list of registered classes to stream
 		void dump(std::ostream &stream) const
 		{
-			for (BOOST_AUTO(it, classes.begin()); it != classes.end(); ++it)
+			for (auto it = classes.begin(); it != classes.end(); ++it)
 				stream << "- " << it->first << "\n";
 		}
 		

@@ -276,9 +276,9 @@ void PointMatcher<T>::DataPoints::concatenateLabelledMatrix(Labels* labels, Matr
 		
 		// collect labels to be kept
 		Labels newLabels;
-		for(BOOST_AUTO(it, labels->begin()); it != labels->end(); ++it)
+		for(auto it = labels->begin(); it != labels->end(); ++it)
 		{
-			for(BOOST_AUTO(jt, extraLabels.begin()); jt != extraLabels.end(); ++jt)
+			for(auto jt = extraLabels.begin(); jt != extraLabels.end(); ++jt)
 			{
 				if (it->text == jt->text)
 				{
@@ -302,7 +302,7 @@ void PointMatcher<T>::DataPoints::concatenateLabelledMatrix(Labels* labels, Matr
 			
 			// fill
 			unsigned row(0);
-			for(BOOST_AUTO(it, newLabels.begin()); it != newLabels.end(); ++it)
+			for(auto it = newLabels.begin(); it != newLabels.end(); ++it)
 			{
 				Eigen::Block<MatrixType> view(newData.block(row, 0, it->span, newData.cols()));
 				view.leftCols(nbPoints1) = getViewByName(it->text, *labels, *data);
@@ -729,7 +729,7 @@ void PointMatcher<T>::DataPoints::assertConsistency(const std::string& dataName,
 				(boost::format("Point cloud has %1% points in features but %2% points in %3%") % features.cols() % dataCols % dataName).str()
 			);
 		int descDim(0);
-		for (BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+		for (auto it = labels.begin(); it != labels.end(); ++it)
 			descDim += it->span;
 		if (dataRows != descDim)
 			throw std::runtime_error(
@@ -777,7 +777,7 @@ void PointMatcher<T>::DataPoints::allocateFields(const Labels& newLabels, Labels
 	{
 		const string& newName(newLabels[i].text);
 		const size_t newSpan(newLabels[i].span);
-		for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+		for(auto it = labels.begin(); it != labels.end(); ++it)
 		{
 			if (it->text == newName)
 			{
@@ -886,7 +886,7 @@ void PointMatcher<T>::DataPoints::removeField(const std::string& name, Labels& l
 	data.conservativeResize(data.rows()-span, nbPoints);
 
 	// remove label from the label list
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 		{
@@ -905,7 +905,7 @@ template<typename MatrixType>
 const typename Eigen::Block<const MatrixType> PointMatcher<T>::DataPoints::getConstViewByName(const std::string& name, const Labels& labels, const MatrixType& data, const int viewRow) const
 {
 	unsigned row(0);
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 		{
@@ -932,7 +932,7 @@ template<typename MatrixType>
 typename Eigen::Block<MatrixType> PointMatcher<T>::DataPoints::getViewByName(const std::string& name, const Labels& labels, MatrixType& data, const int viewRow) const
 {
 	unsigned row(0);
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 		{
@@ -956,7 +956,7 @@ typename Eigen::Block<MatrixType> PointMatcher<T>::DataPoints::getViewByName(con
 template<typename T>
 bool PointMatcher<T>::DataPoints::fieldExists(const std::string& name, const unsigned dim, const Labels& labels) const
 {
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 		{
@@ -974,7 +974,7 @@ bool PointMatcher<T>::DataPoints::fieldExists(const std::string& name, const uns
 template<typename T>
 unsigned PointMatcher<T>::DataPoints::getFieldDimension(const std::string& name, const Labels& labels) const
 {
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 			return it->span;
@@ -988,7 +988,7 @@ template<typename T>
 unsigned PointMatcher<T>::DataPoints::getFieldStartingRow(const std::string& name, const Labels& labels) const
 {
 	unsigned row(0);
-	for(BOOST_AUTO(it, labels.begin()); it != labels.end(); ++it)
+	for(auto it = labels.begin(); it != labels.end(); ++it)
 	{
 		if (it->text == name)
 			return row;

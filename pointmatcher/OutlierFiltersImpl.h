@@ -73,9 +73,9 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "maxDist", "threshold distance (Euclidean norm)", "1", "0.0000001", "inf", &P::Comp<T>) 
-			;
+			return {
+				{ "maxDist", "threshold distance (Euclidean norm)", "1", "0.0000001", "inf", &P::Comp<T>},
+			};
 		}
 		
 		const T maxDist;
@@ -93,9 +93,9 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "minDist", "threshold distance (Euclidean norm)", "1", "0.0000001", "inf", &P::Comp<T>) 
-			;
+			return {
+				{ "minDist", "threshold distance (Euclidean norm)", "1", "0.0000001", "inf", &P::Comp<T>},
+			};
 		}
 		
 		const T minDist;
@@ -112,9 +112,9 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "factor", "points farther away factor * median will be considered outliers.", "3", "0.0000001", "inf", &P::Comp<T>)
-			;
+			return {
+				{ "factor", "points farther away factor * median will be considered outliers.", "3", "0.0000001", "inf", &P::Comp<T>},
+			};
 		}
 		
 		const T factor;
@@ -131,9 +131,9 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "ratio", "percentage to keep", "0.85", "0.0000001", "1.0", &P::Comp<T>)
-			;
+			return {
+				{ "ratio", "percentage to keep", "0.85", "0.0000001", "1.0", &P::Comp<T>},
+			};
 		}
 		
 		const T ratio;
@@ -150,11 +150,11 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "minRatio", "min ratio", "0.05", "0.0000001", "1", &P::Comp<T>)
-				( "maxRatio", "max ratio", "0.99", "0.0000001", "1", &P::Comp<T>)
-				( "lambda", "lambda (part of the term that balance the rmsd: 1/ratio^lambda", "0.95" )
-			;
+			return {
+				{ "minRatio", "min ratio", "0.05", "0.0000001", "1", &P::Comp<T>},
+				{ "maxRatio", "max ratio", "0.99", "0.0000001", "1", &P::Comp<T>},
+				{ "lambda", "lambda (part of the term that balance the rmsd: 1/ratio^lambda", "0.95" },
+			};
 		}
 
 		const T minRatio;
@@ -179,9 +179,9 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "maxAngle", "Maximum authorised angle between the 2 surface normals (in radian)", "1.57", "0.0", "3.1416", &P::Comp<T>)
-			;
+			return {
+				{ "maxAngle", "Maximum authorised angle between the 2 surface normals (in radian)", "1.57", "0.0", "3.1416", &P::Comp<T>},
+			};
 		}
 
 		const T eps;
@@ -199,13 +199,13 @@ struct OutlierFiltersImpl
 		}
 		inline static const ParametersDoc availableParameters()
 		{
-			return boost::assign::list_of<ParameterDoc>
-				( "source", "Point cloud from which the descriptor will be used: reference or reading", "reference")
-				( "descName", "Descriptor name used to weight paired points", "none")
-				( "useSoftThreshold", "If set to 1 (true), uses the value of the descriptor as a weight. If set to 0 (false), uses the parameter 'threshold' to set binary weights.", "0", "0", "1", P::Comp<bool>)
-				( "useLargerThan", "If set to 1 (true), values over the 'threshold' will have a weight of one.  If set to 0 (false), values under the 'threshold' will have a weight of one. All other values will have a weight of zero.", "1", "0", "1", P::Comp<bool>)
-				( "threshold", "Value used to determine the binary weights", "0.1", "0.0000001", "inf", &P::Comp<T>)
-				;
+			return {
+				{ "source", "Point cloud from which the descriptor will be used: reference or reading", "reference"},
+				{ "descName", "Descriptor name used to weight paired points", "none"},
+				{ "useSoftThreshold", "If set to 1 (true), uses the value of the descriptor as a weight. If set to 0 (false), uses the parameter 'threshold' to set binary weights.", "0", "0", "1", P::Comp<bool>},
+				{ "useLargerThan", "If set to 1 (true), values over the 'threshold' will have a weight of one.  If set to 0 (false), values under the 'threshold' will have a weight of one. All other values will have a weight of zero.", "1", "0", "1", P::Comp<bool>},
+				{ "threshold", "Value used to determine the binary weights", "0.1", "0.0000001", "inf", &P::Comp<T>},
+				};
 		}
 		
 		const std::string source;
