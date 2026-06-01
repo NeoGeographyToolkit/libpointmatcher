@@ -5,7 +5,7 @@ include(CheckSymbolExists)
 project(libpointmatcher)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 
 # Extract version from header
 execute_process(
