@@ -187,19 +187,6 @@ struct PointMatcherIO
 	static void saveCSV(const DataPoints& data, const std::string& fileName);
 	static void saveCSV(const DataPoints& data, std::ostream& os);
 
-	// VTK
-	//! Enumeration of legacy VTK data types that can be parsed
-	enum SupportedVTKDataTypes
-	{
-		POLYDATA,
-		UNSTRUCTURED_GRID
-	};
-
-	static DataPoints loadVTK(const std::string& fileName);
-	static DataPoints loadVTK(std::istream& is);
-
-	static void saveVTK(const DataPoints& data, const std::string& fileName, bool binary = false);
-
 	// PLY
 	static DataPoints loadPLY(const std::string& fileName);
 	static DataPoints loadPLY(std::istream& is);

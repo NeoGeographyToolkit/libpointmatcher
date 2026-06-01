@@ -3,7 +3,7 @@
 /*
 
 Copyright (c) 2010--2012,
-François Pomerleau and Stephane Magnenat, ASL, ETHZ, Switzerland
+Francois Pomerleau and Stephane Magnenat, ASL, ETHZ, Switzerland
 You can contact the authors at <f dot pomerleau at gmail dot com> and
 <stephane at magnenat dot net>
 
@@ -47,7 +47,7 @@ struct InspectorsImpl
 	typedef Parametrizable::Parameters Parameters;
 	typedef Parametrizable::ParameterDoc ParameterDoc;
 	typedef Parametrizable::ParametersDoc ParametersDoc;
-	
+
 	typedef typename PointMatcher<T>::Inspector Inspector;
 	typedef typename PointMatcher<T>::DataPoints DataPoints;
 	typedef typename PointMatcher<T>::Matches Matches;
@@ -55,7 +55,7 @@ struct InspectorsImpl
 	typedef typename PointMatcher<T>::TransformationParameters TransformationParameters;
 	typedef typename PointMatcher<T>::TransformationCheckers TransformationCheckers;
 	typedef typename PointMatcher<T>::Matrix Matrix;
-	
+
 	// Clearer name when no inspector is required
 	struct NullInspector: public Inspector
 	{
@@ -64,12 +64,12 @@ struct InspectorsImpl
 			return "Does nothing.";
 		}
 	};
-	
+
 	struct PerformanceInspector: public Inspector
 	{
 		inline static const std::string description()
 		{
-			return "Keep statistics on performance.";
+			return "Keep statistics on performance and dump iteration info.";
 		}
 		inline static const ParametersDoc availableParameters()
 		{
@@ -77,112 +77,30 @@ struct InspectorsImpl
 				{ "baseFileName", "base file name for the statistics files (if empty, disabled)", "" },
 				{ "dumpPerfOnExit", "dump performance statistics to stderr on exit", "0" },
 				{ "dumpStats", "dump the statistics on first and last step", "0" },
+				{ "dumpIterationInfo", "dump iteration info to CSV", "0" },
 			};
 		}
 
 		const std::string baseFileName;
-		// Note: Prefix boolean variables with 'b' to avoid conflicts 
-		// with similarly named functions.
 		const bool bDumpPerfOnExit;
 		const bool bDumpStats;
-		
+		const bool bDumpIterationInfo;
+
 	protected:
 		typedef PointMatcherSupport::Histogram<double> Histogram;
 		typedef std::map<std::string, Histogram> HistogramMap;
 		HistogramMap stats;
-	
+		std::ostream* streamIter;
+
 	public:
 		PerformanceInspector(const std::string& className, const ParametersDoc paramsDoc, const Parameters& params);
 		PerformanceInspector(const Parameters& params);
-		
+
+		virtual void init();
 		virtual void addStat(const std::string& name, double data);
 		virtual void dumpStats(std::ostream& stream);
 		virtual void dumpStatsHeader(std::ostream& stream);
-	};
-
-	struct AbstractVTKInspector: public PerformanceInspector
-	{
-
-	protected:
-		virtual std::ostream* openStream(const std::string& role) = 0;
-		virtual std::ostream* openStream(const std::string& role, const size_t iterationNumber) = 0;
-		virtual void closeStream(std::ostream* stream) = 0;
-		void dumpDataPoints(const DataPoints& data, std::ostream& stream);
-		void dumpMeshNodes(const DataPoints& data, std::ostream& stream);
-		void dumpDataLinks(const DataPoints& ref, const DataPoints& reading, 	const Matches& matches, const OutlierWeights& featureOutlierWeights, std::ostream& stream);
-		
-		std::ostream* streamIter;
-		const bool bDumpIterationInfo;
-		const bool bDumpDataLinks;
-		const bool bDumpReading;
-		const bool bDumpReference;
-		const bool bWriteBinary;
-
-	public:
-		AbstractVTKInspector(const std::string& className, const ParametersDoc paramsDoc, const Parameters& params);
-		virtual void init() {};
-		virtual void dumpDataPoints(const DataPoints& cloud, const std::string& name);
-		virtual void dumpMeshNodes(const DataPoints& cloud, const std::string& name);
 		virtual void dumpIteration(const size_t iterationNumber, const TransformationParameters& parameters, const DataPoints& filteredReference, const DataPoints& reading, const Matches& matches, const OutlierWeights& outlierWeights, const TransformationCheckers& transformationCheckers);
-		virtual void finish(const size_t iterationCount);
-
-	private:
-		void buildGenericAttributeStream(std::ostream& stream, const std::string& attribute, const std::string& nameTag, const DataPoints& cloud, const int forcedDim);
-
-		void buildScalarStream(std::ostream& stream, const std::string& name, const DataPoints& ref, const DataPoints& reading);
-		void buildScalarStream(std::ostream& stream, const std::string& name, const DataPoints& cloud);
-		
-		void buildNormalStream(std::ostream& stream, const std::string& name, const DataPoints& ref, const DataPoints& reading);
-		void buildNormalStream(std::ostream& stream, const std::string& name, const DataPoints& cloud);
-		
-		void buildVectorStream(std::ostream& stream, const std::string& name, const DataPoints& ref, const DataPoints& reading);
-		void buildVectorStream(std::ostream& stream, const std::string& name, const DataPoints& cloud);
-		
-		void buildTensorStream(std::ostream& stream, const std::string& name, const DataPoints& ref, const DataPoints& reading);
-		void buildTensorStream(std::ostream& stream, const std::string& name, const DataPoints& cloud);
-		
-		void buildColorStream(std::ostream& stream, const std::string& name, const DataPoints& cloud);
-		
-
-
-		Matrix padWithZeros(const Matrix m, const int expectedRow, const int expectedCols); 
-		Matrix padWithOnes(const Matrix m, const int expectedRow, const int expectedCols); 
-	};
-
-	struct VTKFileInspector: public AbstractVTKInspector
-	{
-		inline static const std::string description()
-		{
-			return "Dump the different steps into VTK files.";
-		}
-		inline static const ParametersDoc availableParameters()
-		{
-			return {
-				{ "baseFileName", "base file name for the VTK files ", "point-matcher-output" },
-				{ "dumpPerfOnExit", "dump performance statistics to stderr on exit", "0" },
-				{ "dumpStats", "dump the statistics on first and last step", "0" },
-				{ "dumpIterationInfo", "dump iteration info", "0" },
-				{ "dumpDataLinks", "dump data links at each iteration", "0" },
-				{ "dumpReading", "dump the reading cloud at each iteration", "0" },
-				{ "dumpReference", "dump the reference cloud at each iteration", "0" },
-				{ "writeBinary", "write binary VTK files", "0" },
-			};
-		}
-		
-		const std::string baseFileName;
-		const bool bDumpIterationInfo;
-		const bool bDumpDataLinks;
-		const bool bDumpReading;
-		const bool bDumpReference;
-		
-	protected:
-		virtual std::ostream* openStream(const std::string& role);
-		virtual std::ostream* openStream(const std::string& role, const size_t iterationCount);
-		virtual void closeStream(std::ostream* stream);
-		
-	public:
-		VTKFileInspector(const Parameters& params = Parameters());
-		virtual void init();
 		virtual void finish(const size_t iterationCount);
 	};
 }; // InspectorsImpl

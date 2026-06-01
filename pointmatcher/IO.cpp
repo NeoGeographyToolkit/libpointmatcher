@@ -34,8 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "IO.h"
-#include "IOFunctions.h"
-#include "InspectorsImpl.h"
 
 // For logging
 #include "PointMatcherPrivate.h"
@@ -54,14 +52,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef WIN32
 #define strtok_r strtok_s
 #endif // WIN32
-
-namespace PointMatcherSupport {
-	namespace {
-		const int one = 1;
-	}
-	const bool isBigEndian = *reinterpret_cast<const unsigned char*>(&one) == static_cast<unsigned char>(0);
-	const int oneBigEndian = isBigEndian ? 1 : 1 << 8 * (sizeof(int) - 1);
-}
 
 using namespace std;
 using namespace PointMatcherSupport;
@@ -185,7 +175,7 @@ PointMatcherIO<T>::FileInfoVector::FileInfoVector()
 //! Load a vector of FileInfo from a CSV file.
 /**
 	@param fileName name of the CSV file
-	@param dataPath path relative to which the point cloud CSV or VTK will be resolved
+	@param dataPath path relative to which the point cloud CSV will be resolved
 	@param configPath path relative to which the yaml configuration files will be resolved
 	
 	The first line of the CSV file must contain a header. The supported tags are:
@@ -370,16 +360,14 @@ typename PointMatcher<T>::DataPoints PointMatcher<T>::DataPoints::load(const std
 	const boost::filesystem::path path(fileName);
   std::string ext = path.extension().string();
 
-	if (boost::iequals(ext, ".vtk"))
-		return PointMatcherIO<T>::loadVTK(fileName);
-	else if (boost::iequals(ext, ".csv"))
+	if (boost::iequals(ext, ".csv"))
 		return PointMatcherIO<T>::loadCSV(fileName);
 	else if (boost::iequals(ext, ".ply"))
 		return PointMatcherIO<T>::loadPLY(fileName);
 	else if (boost::iequals(ext, ".pcd"))
 		return PointMatcherIO<T>::loadPCD(fileName);
 	else
-		throw runtime_error("loadAnyFormat(): Unknown extension \"" + ext + "\" for file \"" + fileName + "\", extension must be either \".vtk\" or \".csv\"");
+		throw runtime_error("loadAnyFormat(): Unknown extension \"" + ext + "\" for file \"" + fileName + "\", extension must be \".csv\", \".ply\", or \".pcd\"");
 }
 
 template
@@ -879,12 +867,6 @@ void PointMatcher<T>::DataPoints::save(const std::string& fileName, bool binary)
 	const boost::filesystem::path path(fileName);
   std::string ext = path.extension().string();
 
-	if (boost::iequals(ext, ".vtk"))
-		return PointMatcherIO<T>::saveVTK(*this, fileName, binary);
-
-	if (binary)
-		throw runtime_error("save(): Binary writing is not supported together with extension \"" + ext + "\". Currently binary writing is only supported with \".vtk\".");
-
 	if (boost::iequals(ext, ".csv"))
 		return PointMatcherIO<T>::saveCSV(*this, fileName);
 	else if (boost::iequals(ext, ".ply"))
@@ -892,7 +874,7 @@ void PointMatcher<T>::DataPoints::save(const std::string& fileName, bool binary)
 	else if (boost::iequals(ext, ".pcd"))
 		return PointMatcherIO<T>::savePCD(*this, fileName);
 	else
-		throw runtime_error("save(): Unknown extension \"" + ext + "\" for file \"" + fileName + "\", extension must be either \".vtk\", \".ply\", \".pcd\" or \".csv\"");
+		throw runtime_error("save(): Unknown extension \"" + ext + "\" for file \"" + fileName + "\", extension must be \".csv\", \".ply\", or \".pcd\"");
 }
 
 template
@@ -973,273 +955,6 @@ template
 void PointMatcherIO<float>::saveCSV(const DataPoints& data, const std::string& fileName);
 template
 void PointMatcherIO<double>::saveCSV(const DataPoints& data, const std::string& fileName);
-
-//! Load point cloud from a file as VTK
-template<typename T>
-typename PointMatcher<T>::DataPoints PointMatcherIO<T>::loadVTK(const std::string& fileName)
-{
-	ifstream ifs(fileName.c_str());
-	if (!ifs.good())
-		throw runtime_error(string("Cannot open file ") + fileName);
-	return loadVTK(ifs);
-}
-
-void skipBlock(bool binary, int binarySize, std::istream & is, bool hasSeparateSizeParameter = true){
-	int n;
-	int size;
-	is >> n;
-	if(hasSeparateSizeParameter) {
-		is >> size;
-	} else {
-		size = n;
-	}
-
-	std::string line;
-	getline(is, line); // remove line end after parameters;
-	if(binary){
-		is.seekg(size * binarySize, std::ios_base::cur);
-	} else {
-		for (int p = 0; p < n; p++)
-		{
-			getline(is, line);
-		}
-	}
-}
-
-//! Load point cloud from a stream as VTK
-template<typename T>
-typename PointMatcher<T>::DataPoints PointMatcherIO<T>::loadVTK(std::istream& is)
-{
-	//typedef typename DataPoints::Label Label;
-	//typedef typename DataPoints::Labels Labels;
-	
-	DataPoints loadedPoints;
-
-	// parse header
-	string line;
-	getline(is, line);
-	if (line.find("# vtk DataFile Version") != 0)
-		throw runtime_error(string("Wrong magic header, found ") + line);
-	getline(is, line);
-	getline(is, line);
-
-	const bool isBinary = (line == "BINARY");
-	if (line != "ASCII"){
-		if(!isBinary){
-			throw runtime_error(string("Wrong file type, expecting ASCII or BINARY, found ") + line);
-		}
-	}
-	getline(is, line);
-
-	SupportedVTKDataTypes dataType;
-	if (line == "DATASET POLYDATA")
-		dataType = POLYDATA;
-	else if (line == "DATASET UNSTRUCTURED_GRID")
-		dataType = UNSTRUCTURED_GRID;
-	else
-		throw runtime_error(string("Wrong data type, expecting DATASET POLYDATA, found ") + line);
-
-
-	// parse points and descriptors
-	string fieldName;
-	string name;
-	int dim = 0;
-	int pointCount = 0;
-	string type;
-	while (is.good())
-	{
-		is >> fieldName;
-		
-		// load features
-		if(fieldName == "POINTS")
-		{
-			is >> pointCount;
-			is >> type;
-			getline(is, line); // remove line end after parameters!
-
-			if(!(type == "float" || type == "double"))
-					throw runtime_error(string("Field POINTS can only be of type double or float"));
-
-			Matrix features(4, pointCount);
-			for (int p = 0; p < pointCount; ++p)
-			{
-				readVtkData(type, isBinary, features.template block<3, 1>(0, p), is);
-				features(3, p) = 1.0;
-			}
-			loadedPoints.addFeature("x", features.row(0));
-			loadedPoints.addFeature("y", features.row(1));
-			loadedPoints.addFeature("z", features.row(2));
-			loadedPoints.addFeature("pad", features.row(3));
-		}
-
-		//////////////////////////////////////////////////////////
-		// Dataset type
-		// POLYDATA
-		else if(dataType == POLYDATA && fieldName == "VERTICES")
-		{
-			skipBlock(isBinary, 4, is);
-		}
-
-		else if(dataType == POLYDATA && fieldName == "LINES")
-		{
-			skipBlock(isBinary, 4, is);
-		}
-
-		else if(dataType == POLYDATA && fieldName == "POLYGONS")
-		{
-			skipBlock(isBinary, 4, is);
-		}
-
-		else if(dataType == POLYDATA && fieldName == "TRIANGLE_STRIPS")
-		{
-			skipBlock(isBinary, 4, is);
-		}
-
-		// Unstructure Grid
-		else if(dataType == UNSTRUCTURED_GRID && fieldName == "CELLS")
-		{
-			skipBlock(isBinary, 4, is);
-		}
-		else if(dataType == UNSTRUCTURED_GRID && fieldName == "CELL_TYPES")
-		{
-			skipBlock(isBinary, 4, is, false); // according to http://www.vtk.org/VTK/img/file-formats.pdf CELL_TYPES only has one parameter (n)
-		}
-
-		//////////////////////////////////////////////////////////
-		// Point data
-		else if(fieldName == "POINT_DATA")
-		{
-			int descriptorCount;
-			is >> descriptorCount;
-			if(pointCount != descriptorCount)
-				throw runtime_error(string("The size of POINTS is different than POINT_DATA"));
-		}
-		//////////////////////////////////////////////////////////
-		// Field data is ignored
-		else if (fieldName == "FIELD")
-		{
-			string fieldDataName;
-			int fieldDataCount;
-			is >> fieldDataName >> fieldDataCount;
-
-			for (int f = 0; f < fieldDataCount; f++)
-			{
-				//getline(is, line);
-				int numTuples;
-				is >> name >> dim >> numTuples >> type;
-
-				if(type == "vtkIdType") // skip that type
-				{
-					if(isBinary){
-						is.seekg(dim * numTuples * 4, std::ios_base::cur);
-					} else {
-						int t_val;
-						for (int t = 0; t < dim * numTuples; t++ )
-						{
-							is >> t_val;
-						}
-					}
-				}
-				else if(!(type == "float" || type == "double"))
-						throw runtime_error(string("Field " + fieldName + " is " + type + " but can only be of type double or float"));
-						 
-
-				Matrix descriptor(dim, pointCount);
-				readVtkData(type, isBinary, descriptor.transpose(), is);
-				loadedPoints.addDescriptor(name, descriptor);
-			}
-		}
-		else // Load descriptors
-		{
-			// descriptor name
-			is >> name;
-
-			bool skipLookupTable = false;
-			bool isColorScalars = false;
-			if(fieldName == "SCALARS")
-			{
-				dim = 1;
-				is >> type;
-				skipLookupTable = true;
-			}
-			else if(fieldName == "VECTORS")
-			{
-				dim = 3;
-				is >> type;
-			}
-			else if(fieldName == "TENSORS")
-			{
-				dim = 9;
-				is >> type;
-			}
-			else if(fieldName == "NORMALS")
-			{
-				dim = 3;
-				is >> type;
-			}
-			else if(fieldName == "COLOR_SCALARS")
-			{
-				is >> dim;
-				type = "float";
-				isColorScalars = true;
-			}
-			else
-				throw runtime_error(string("Unknown field name " + fieldName + ", expecting SCALARS, VECTORS, TENSORS, NORMALS or COLOR_SCALARS."));
-
-			
-			getline(is, line); // remove rest of the parameter line including its line end;
-
-			Matrix descriptor(dim, pointCount);
-			if(isColorScalars && isBinary) {
-				std::vector<unsigned char> buffer(dim);
-				for (int i = 0; i < pointCount; ++i){
-					is.read(reinterpret_cast<char *>(&buffer.front()), dim);
-					for(int r=0; r < dim; ++r){
-						descriptor(r, i) = buffer[r] / static_cast<T>(255.0);
-					}
-				}
-			} else {
-				if(!(type == "float" || type == "double"))
-						throw runtime_error(string("Field " + fieldName + " is " + type + " but can only be of type double or float"));
-
-				// Skip LOOKUP_TABLE line
-				if(skipLookupTable)
-				{
-					getline(is, line);
-				}
-				readVtkData(type, isBinary, descriptor.transpose(), is);
-			}
-			loadedPoints.addDescriptor(name, descriptor);
-		}
-	}
-	
-	return loadedPoints;
-}
-
-template
-PointMatcherIO<float>::DataPoints PointMatcherIO<float>::loadVTK(const std::string& fileName);
-template
-PointMatcherIO<double>::DataPoints PointMatcherIO<double>::loadVTK(const std::string& fileName);
-
-
-//! Save point cloud to a file as VTK
-template<typename T>
-void PointMatcherIO<T>::saveVTK(const DataPoints& data, const std::string& fileName, bool binary)
-{
-	typedef typename InspectorsImpl<T>::VTKFileInspector VTKInspector;
-	
-	Parametrizable::Parameters param;
-	boost::assign::insert(param) ("baseFileName", "");
-	boost::assign::insert(param) ("writeBinary", toParam(binary));
-	VTKInspector vtkInspector(param);
-	vtkInspector.dumpDataPoints(data, fileName);
-}
-
-
-template
-void PointMatcherIO<float>::saveVTK(const PointMatcherIO<float>::DataPoints& data, const std::string& fileName, bool binary);
-template
-void PointMatcherIO<double>::saveVTK(const PointMatcher<double>::DataPoints& data, const std::string& fileName, bool binary);
 
 //! @brief Load polygon file format (ply) file
 //! @param fileName a string containing the path and the file name

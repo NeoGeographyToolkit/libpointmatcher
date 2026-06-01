@@ -155,11 +155,10 @@ void PointMatcher<T>::ICPChainBase::setParams
   this->transformationCheckers.push_back(new typename TransformationCheckersImpl<T>::CounterTransformationChecker(p3));
   this->transformationCheckers.push_back(new typename TransformationCheckersImpl<T>::DifferentialTransformationChecker(p4));
 
-  //this->inspector.reset(new typename InspectorsImpl<T>::NullInspector);
   Parameters p;
-  p["dumpIterationInfo" ] = "1";
-  p["baseFileName" ] = output_prefix;
-  this->inspector.reset(new typename InspectorsImpl<T>::VTKFileInspector(p));
+  p["dumpIterationInfo"] = "1";
+  p["baseFileName"] = output_prefix;
+  this->inspector.reset(new typename InspectorsImpl<T>::PerformanceInspector(p));
 
   if (verbose)
     logger.reset(new FileLogger());
