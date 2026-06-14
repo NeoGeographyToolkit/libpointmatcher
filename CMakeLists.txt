@@ -130,6 +130,18 @@ install(TARGETS pointmatcher
 	LIBRARY DESTINATION ${INSTALL_LIB_DIR}
 	RUNTIME DESTINATION ${INSTALL_BIN_DIR})
 
+# On macOS, CMake's install step edits the library with install_name_tool,
+# which invalidates its code signature; recent macOS then refuses to load it.
+# Re-sign ad-hoc after install. No-op on Linux.
+if (APPLE)
+  install(CODE "
+    file(GLOB signlibs \"\${CMAKE_INSTALL_PREFIX}/lib/libpointmatcher*.dylib\")
+    foreach(f IN LISTS signlibs)
+      execute_process(COMMAND codesign --force --sign - \${f} ERROR_QUIET)
+    endforeach()
+  ")
+endif()
+
 install(FILES
 	pointmatcher/PointMatcher.h
 	pointmatcher/PointMatcherPrivate.h
